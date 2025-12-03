@@ -15,15 +15,16 @@
 }
 
 :root {
-  /* Colors */
-  --primary-color: #4F46E5;
-  --primary-dark: #4338CA;
-  --primary-light: #818CF8;
-  --secondary-color: #10B981;
-  --danger-color: #EF4444;
-  --warning-color: #F59E0B;
-  --text-primary: #1F2937;
-  --text-secondary: #6B7280;
+  /* Colors - WCAG AA準拠のコントラスト比 */
+  --primary-color: #4338CA;
+  --primary-dark: #3730A3;
+  --primary-light: #6366F1;
+  --secondary-color: #059669;
+  --danger-color: #DC2626;
+  --warning-color: #D97706;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-tertiary: #6B7280;
   --bg-primary: #FFFFFF;
   --bg-secondary: #F9FAFB;
   --border-color: #E5E7EB;
@@ -36,14 +37,15 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   
-  /* Typography */
+  /* Typography - モバイルファーストで読みやすいサイズ */
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 2rem;
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;       /* 16px - 最小推奨サイズ */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 2rem;        /* 32px */
+  --font-size-4xl: 2.5rem;      /* 40px */
   
   /* Border Radius */
   --radius-sm: 0.25rem;
@@ -66,10 +68,12 @@ body {
   font-size: var(--font-size-base);
   color: var(--text-primary);
   background-color: var(--bg-secondary);
-  line-height: 1.5;
+  line-height: 1.6; /* 読みやすさのため1.6に変更 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  /* 最小フォントサイズを保証 */
+  min-width: 320px;
 }
 
 /* Accessibility: Focus States */
@@ -394,9 +398,9 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-size: var(--font-size-base);
-  font-weight: 500;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -404,6 +408,7 @@ textarea:focus-visible {
   text-decoration: none;
   position: relative;
   overflow: hidden;
+  min-height: 44px; /* タッチターゲットの最小サイズ */
 }
 
 .btn::before {
@@ -5188,15 +5193,17 @@ img {
 }
 
 .dashboard-title {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-4xl);
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.02em;
 }
 
 .dashboard-subtitle {
-  font-size: var(--font-size-lg);
-  opacity: 0.9;
+  font-size: var(--font-size-xl);
+  opacity: 0.95;
+  font-weight: 500;
 }
 
 /* チェックイン状況カード */
@@ -5227,15 +5234,16 @@ img {
 }
 
 .checkin-status-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
 }
 
 .checkin-status-detail {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .checkin-done {
@@ -5351,7 +5359,7 @@ img {
 }
 
 .dashboard-section-title {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--spacing-lg);
@@ -5396,11 +5404,11 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   font-weight: 700;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   color: white;
   flex-shrink: 0;
 }
@@ -5426,19 +5434,20 @@ img {
 }
 
 .quest-item-title {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
   color: var(--text-primary);
   flex: 1;
 }
 
 .quest-check {
   color: var(--secondary-color);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
 }
 
 .quest-item-description {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: var(--text-secondary);
   margin-bottom: var(--spacing-md);
   line-height: 1.6;
