@@ -104,6 +104,7 @@ serve(async (req) => {
     }
 
     if (existingCheckin && existingCheckin.length > 0) {
+      console.log('Duplicate check-in detected for user:', user.id)
       return new Response(
         JSON.stringify({
           success: false,
@@ -111,7 +112,7 @@ serve(async (req) => {
           isDuplicate: true,
         }),
         {
-          status: 400,
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       )
