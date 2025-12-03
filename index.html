@@ -91,11 +91,27 @@
                     
                     if (tag) {
                         console.log('📱 QR Code detected with tag:', tag);
+                        
+                        // Hide loading
+                        if (loading) {
+                            loading.style.display = 'none';
+                        }
+                        
                         // チェックイン処理を実行
                         if (typeof checkinManager !== 'undefined') {
-                            const result = await checkinManager.handleQRCodeUrl();
-                            if (result && result.success) {
-                                // チェックイン成功後、ダッシュボードを表示
+                            try {
+                                const result = await checkinManager.handleQRCodeUrl();
+                                console.log('Checkin result:', result);
+                                
+                                // チェックイン結果に関わらず、URLからtagパラメータを削除してダッシュボードへ
+                                const newUrl = window.location.origin + window.location.pathname;
+                                window.history.replaceState({}, '', newUrl);
+                                
+                                // ダッシュボードを表示
+                                await dashboardManager.showDashboard();
+                            } catch (error) {
+                                console.error('Checkin error:', error);
+                                // エラーでもダッシュボードを表示
                                 await dashboardManager.showDashboard();
                             }
                         }

@@ -252,15 +252,26 @@ class AuthManager {
     
     // 既にホームページにいる場合はリダイレクトしない
     const currentPath = window.location.pathname;
-    if (currentPath === '/' || currentPath === '/index.html') {
+    const isHomePage = currentPath === '/' || currentPath === '/index.html' || currentPath.endsWith('/officing/') || currentPath.endsWith('/officing/index.html');
+    
+    if (isHomePage) {
       console.log('Already on home page, skipping redirect');
       return;
     }
     
+    // ログインページにいる場合のみリダイレクト
+    const isLoginPage = currentPath.includes('login.html') || currentPath.includes('auth-demo.html');
+    if (!isLoginPage) {
+      console.log('Not on login page, skipping redirect');
+      return;
+    }
+    
     // returnUrlがあればそこへ、なければダッシュボードへ
-    if (this.returnUrl && this.returnUrl !== '/auth' && this.returnUrl !== '/login') {
+    if (this.returnUrl && this.returnUrl !== '/auth' && this.returnUrl !== '/login' && !this.returnUrl.includes('login.html')) {
+      console.log('Redirecting to:', this.returnUrl);
       window.location.href = this.returnUrl;
     } else {
+      console.log('Redirecting to home');
       window.location.href = './';
     }
   }

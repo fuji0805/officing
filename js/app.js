@@ -64,7 +64,9 @@ class OfficingApp {
    */
   registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
+      // GitHub Pagesの場合、相対パスを使用
+      const swPath = './sw.js';
+      navigator.serviceWorker.register(swPath)
         .then((registration) => {
           console.log('✅ Service Worker registered:', registration.scope);
         })
