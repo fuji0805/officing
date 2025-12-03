@@ -79,8 +79,26 @@
                     // Check authentication
                     const user = await getCurrentUser();
                     if (!user) {
-                        // Redirect to auth if not logged in
-                        window.location.href = './login.html?returnUrl=' + encodeURIComponent(window.location.href);
+                        // QRコードパラメータを保持してログイン画面にリダイレクト
+                        const fullUrl = window.location.href;
+                        window.location.href = './login.html?returnUrl=' + encodeURIComponent(fullUrl);
+                        return;
+                    }
+                    
+                    // QRコードからのアクセスをチェック
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const tag = urlParams.get('tag');
+                    
+                    if (tag) {
+                        console.log('📱 QR Code detected with tag:', tag);
+                        // チェックイン処理を実行
+                        if (typeof checkinManager !== 'undefined') {
+                            const result = await checkinManager.handleQRCodeUrl();
+                            if (result && result.success) {
+                                // チェックイン成功後、ダッシュボードを表示
+                                await dashboardManager.showDashboard();
+                            }
+                        }
                         return;
                     }
                     
