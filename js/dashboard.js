@@ -121,9 +121,6 @@ class DashboardManager {
             
             <!-- 今日のクエスト -->
             ${this.renderTodayQuests(todayQuests)}
-            
-            <!-- ナビゲーション -->
-            ${this.renderNavigation()}
           </div>
         </div>
       </div>
