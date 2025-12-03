@@ -41,32 +41,46 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    )
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser()
-
-    if (userError || !user) {
+    // Get Authorization header
+    const authHeader = req.headers.get('Authorization')
+    console.log('Authorization header:', authHeader ? 'Present' : 'Missing')
+    
+    if (!authHeader) {
+      console.error('No Authorization header found')
       return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        JSON.stringify({ success: false, error: 'No Authorization header' }),
         {
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       )
     }
+
+    // Initialize Supabase client with service role for admin operations
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    )
+
+    // Verify JWT token and get user
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token)
+
+    console.log('User auth result:', { user: user?.id, error: userError?.message })
+
+    if (userError || !user) {
+      console.error('User authentication failed:', userError)
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized: ' + (userError?.message || 'No user') }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    // Use admin client for database operations
+    const supabaseClient = supabaseAdmin
 
     // Parse request body
     const body: CheckinRequest = await req.json()

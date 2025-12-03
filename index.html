@@ -109,8 +109,9 @@
                                 console.log('Checkin result:', result);
                                 
                                 // チェックイン結果に関わらず、URLからtagパラメータを削除してダッシュボードへ
-                                const newUrl = window.location.origin + window.location.pathname;
-                                window.history.replaceState({}, '', newUrl);
+                                // パラメータのみを削除（パスは保持）
+                                const baseUrl = window.location.href.split('?')[0];
+                                window.history.replaceState({}, '', baseUrl);
                                 
                                 // ダッシュボードを表示
                                 await dashboardManager.showDashboard();
