@@ -61,8 +61,13 @@
             }
             isInitialized = true;
 
-            // Check if we're on the home page
-            if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            // Check if we're on the home page (GitHub Pagesの場合、/officing/も含む)
+            const path = window.location.pathname;
+            const isHomePage = path === '/' || path === '/index.html' || 
+                               path === '/officing/' || path === '/officing/index.html' ||
+                               path.endsWith('/officing/') || path.endsWith('/officing/index.html');
+            
+            if (isHomePage) {
                 // Hide loading initially
                 const loading = document.getElementById('loading');
                 if (loading) {

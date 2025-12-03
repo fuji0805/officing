@@ -27,10 +27,8 @@ class DashboardManager {
     console.log('Starting dashboard load...');
     this.isLoading = true;
 
-    // URLを更新（まだ更新されていない場合のみ）
-    if (window.location.pathname !== '/') {
-      history.pushState({ page: 'dashboard' }, 'Dashboard', '/');
-    }
+    // URLを更新しない（GitHub Pagesでパスの問題を避けるため）
+    // history.pushStateは使用しない
 
     // ローディング画面を表示
     appDiv.innerHTML = `
