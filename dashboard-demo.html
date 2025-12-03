@@ -263,7 +263,7 @@
         // Check authentication
         const user = await getCurrentUser();
         if (!user) {
-          window.location.href = '/auth-demo.html?returnUrl=' + encodeURIComponent(window.location.href);
+          window.location.href = './login.html?returnUrl=' + encodeURIComponent(window.location.href);
           return;
         }
         

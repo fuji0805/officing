@@ -45,7 +45,7 @@ class DashboardManager {
       const user = await getCurrentUser();
       if (!user) {
         this.isLoading = false;
-        window.location.href = '/login.html?returnUrl=' + encodeURIComponent(window.location.href);
+        window.location.href = './login.html?returnUrl=' + encodeURIComponent(window.location.href);
         return;
       }
 

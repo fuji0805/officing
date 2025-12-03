@@ -323,7 +323,7 @@ class StampManager {
     if (typeof dashboardManager !== 'undefined') {
       dashboardManager.showDashboard();
     } else {
-      window.location.href = '/';
+      window.location.href = './';
     }
   }
 }

@@ -261,7 +261,7 @@ class AuthManager {
     if (this.returnUrl && this.returnUrl !== '/auth' && this.returnUrl !== '/login') {
       window.location.href = this.returnUrl;
     } else {
-      window.location.href = '/';
+      window.location.href = './';
     }
   }
 

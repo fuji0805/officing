@@ -256,7 +256,7 @@ class NavigationManager {
         await authManager.logout();
       } else {
         // フォールバック
-        window.location.href = '/auth-demo.html';
+        window.location.href = './login.html';
       }
     } catch (error) {
       console.error('Logout error:', error);

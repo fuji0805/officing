@@ -134,7 +134,7 @@ class Router {
         console.log('🔒 Authentication required, redirecting to auth...');
         // 認証画面にリダイレクト（リターンURLを保存）
         sessionStorage.setItem('returnUrl', normalizedPath);
-        window.location.href = '/auth-demo.html?returnUrl=' + encodeURIComponent(normalizedPath);
+        window.location.href = './login.html?returnUrl=' + encodeURIComponent(normalizedPath);
         return;
       }
     }

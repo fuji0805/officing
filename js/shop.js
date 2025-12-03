@@ -317,7 +317,7 @@ class ShopManager {
               id: 'reauth',
               label: 'ログイン',
               handler: () => {
-                window.location.href = '/auth';
+                window.location.href = './login.html';
               }
             }
           ]
