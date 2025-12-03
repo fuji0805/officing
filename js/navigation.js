@@ -42,12 +42,30 @@ class NavigationManager {
 
           <div class="nav-menu" id="nav-menu">
             <div class="nav-links">
-              ${this.renderNavLink('/', '🏠', 'ホーム')}
-              ${this.renderNavLink('/stamps', '📅', 'スタンプ帳')}
-              ${this.renderNavLink('/lottery', '🎰', 'くじ')}
-              ${this.renderNavLink('/quests', '📋', 'クエスト')}
-              ${this.renderNavLink('/shop', '🛒', 'ショップ')}
-              ${this.renderNavLink('/profile', '👤', 'プロフィール')}
+              <a href="#" onclick="event.preventDefault(); if(typeof dashboardManager !== 'undefined') { dashboardManager.isLoading = false; dashboardManager.showDashboard(); }" class="nav-link">
+                <span class="nav-link-icon">🏠</span>
+                <span class="nav-link-text">ホーム</span>
+              </a>
+              <a href="#" onclick="event.preventDefault(); if(typeof stampManager !== 'undefined') stampManager.showStampCollectionScreen();" class="nav-link">
+                <span class="nav-link-icon">📅</span>
+                <span class="nav-link-text">スタンプ帳</span>
+              </a>
+              <a href="#" onclick="event.preventDefault(); if(typeof lotteryManager !== 'undefined') lotteryManager.showLotteryScreen();" class="nav-link">
+                <span class="nav-link-icon">🎰</span>
+                <span class="nav-link-text">くじ</span>
+              </a>
+              <a href="#" onclick="event.preventDefault(); if(typeof questManager !== 'undefined') questManager.showQuestScreen();" class="nav-link">
+                <span class="nav-link-icon">📋</span>
+                <span class="nav-link-text">クエスト</span>
+              </a>
+              <a href="#" onclick="event.preventDefault(); if(typeof shopManager !== 'undefined') shopManager.showShopScreen();" class="nav-link">
+                <span class="nav-link-icon">🛒</span>
+                <span class="nav-link-text">ショップ</span>
+              </a>
+              <a href="#" onclick="event.preventDefault(); if(typeof titleManager !== 'undefined') titleManager.showTitleCollectionScreen();" class="nav-link">
+                <span class="nav-link-icon">👤</span>
+                <span class="nav-link-text">プロフィール</span>
+              </a>
             </div>
 
             <div class="nav-footer">
