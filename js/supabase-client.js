@@ -99,10 +99,13 @@ async function signInWithMagicLink(email) {
   const client = getSupabaseClient();
   if (!client) throw new Error('Supabase client not initialized');
   
+  // GitHub Pagesの場合、リポジトリ名を含むURLを使用
+  const redirectUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/';
+  
   const { data, error } = await client.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: window.location.origin
+      emailRedirectTo: redirectUrl
     }
   });
   
@@ -117,10 +120,13 @@ async function signInWithGoogle() {
   const client = getSupabaseClient();
   if (!client) throw new Error('Supabase client not initialized');
   
+  // GitHub Pagesの場合、リポジトリ名を含むURLを使用
+  const redirectUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/';
+  
   const { data, error } = await client.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin
+      redirectTo: redirectUrl
     }
   });
   
