@@ -77,8 +77,11 @@ class NavigationManager {
     const isActive = this.currentPath === path;
     const activeClass = isActive ? 'nav-link-active' : '';
 
+    // ホームページへのリンクは相対パスを使用
+    const href = path === '/' ? './' : path;
+
     return `
-      <a href="${path}" data-link class="nav-link ${activeClass}">
+      <a href="${href}" data-link class="nav-link ${activeClass}">
         <span class="nav-link-icon">${icon}</span>
         <span class="nav-link-text">${text}</span>
       </a>
