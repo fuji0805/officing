@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認証デモ - Officing</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .demo-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .demo-section {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .demo-section h2 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-authenticated {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-unauthenticated {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .info-item {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>認証システムデモ</h1>
+        
+        <div class="demo-section">
+            <h2>認証状態</h2>
+            <div id="auth-status">
+                <p>読み込み中...</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>アクション</h2>
+            <div class="btn-group">
+                <button id="show-auth-btn" class="btn btn-primary">認証画面を表示</button>
+                <button id="check-session-btn" class="btn btn-secondary">セッションをチェック</button>
+                <button id="refresh-session-btn" class="btn btn-secondary">セッションをリフレッシュ</button>
+                <button id="logout-btn" class="btn btn-secondary">ログアウト</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>認証ガードテスト</h2>
+            <p>QRコードスキャンをシミュレート（認証が必要）:</p>
+            <div class="btn-group">
+                <button id="simulate-qr-btn" class="btn btn-primary">QRコードスキャン（?tag=office）</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>セッション情報</h2>
+            <div id="session-info">
+                <p>セッション情報なし</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing auth demo...');
+            
+            // Initialize Supabase
+            initSupabase();
+            
+            // Setup all event listeners and initialize
+            initAuthDemo();
+        });
+
+        // Update auth status display
+        async function updateAuthStatus() {
+            const statusDiv = document.getElementById('auth-status');
+            const sessionInfoDiv = document.getElementById('session-info');
+            
+            try {
+                const session = await getCurrentSession();
+                const user = session?.user;
+                
+                if (user) {
+                    statusDiv.innerHTML = `
+                        <p><span class="status-badge status-authenticated">認証済み</span></p>
+                        <div class="info-item">
+                            <strong>Email:</strong> ${user.email}
+                        </div>
+                        <div class="info-item">
+                            <strong>User ID:</strong> ${user.id}
+                        </div>
+                    `;
+                    
+                    sessionInfoDiv.innerHTML = `
+                        <div class="info-item">
+                            <strong>Access Token:</strong> ${session.access_token.substring(0, 20)}...
+                        </div>
+                        <div class="info-item">
+                            <strong>Expires At:</strong> ${new Date(session.expires_at * 1000).toLocaleString('ja-JP')}
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <p><span class="status-badge status-unauthenticated">未認証</span></p>
+                        <p>ログインしてください</p>
+                    `;
+                    sessionInfoDiv.innerHTML = '<p>セッション情報なし</p>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <p><span class="status-badge status-unauthenticated">エラー</span></p>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        // Initialize auth demo
+        function initAuthDemo() {
+            console.log('Setting up event listeners...');
+            
+            // Setup event listeners
+            const showAuthBtn = document.getElementById('show-auth-btn');
+            if (showAuthBtn) {
+                showAuthBtn.addEventListener('click', () => {
+                    console.log('Show auth button clicked');
+                    console.log('authManager:', typeof authManager);
+                    if (typeof authManager !== 'undefined') {
+                        authManager.showAuthScreen();
+                    } else {
+                        console.error('authManager is not defined');
+                        alert('認証システムの読み込みに失敗しました。ページをリロードしてください。');
+                    }
+                });
+                console.log('Show auth button listener attached');
+            } else {
+                console.error('show-auth-btn not found');
+            }
+
+            const checkSessionBtn = document.getElementById('check-session-btn');
+            if (checkSessionBtn) {
+                checkSessionBtn.addEventListener('click', async () => {
+                    const isValid = await isSessionValid();
+                    alert(`セッション有効性: ${isValid ? '有効' : '無効'}`);
+                    updateAuthStatus();
+                });
+            }
+
+            const refreshSessionBtn = document.getElementById('refresh-session-btn');
+            if (refreshSessionBtn) {
+                refreshSessionBtn.addEventListener('click', async () => {
+                    try {
+                        await refreshSession();
+                        alert('セッションをリフレッシュしました');
+                        updateAuthStatus();
+                    } catch (error) {
+                        alert(`エラー: ${error.message}`);
+                    }
+                });
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    try {
+                        await signOut();
+                        alert('ログアウトしました');
+                        updateAuthStatus();
+                    } catch (error) {
+                        alert(`エラー: ${error.message}`);
+                    }
+                });
+            }
+
+            const simulateQrBtn = document.getElementById('simulate-qr-btn');
+            if (simulateQrBtn) {
+                simulateQrBtn.addEventListener('click', () => {
+                    window.location.href = '/?tag=office';
+                });
+            }
+
+            // Listen for auth state changes
+            onAuthStateChange((event, session) => {
+                console.log('Auth event:', event);
+                updateAuthStatus();
+            });
+
+            // Initial status update
+            updateAuthStatus();
+        }
+    </script>
+</body>
+</html>

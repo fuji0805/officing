@@ -1,0 +1,13 @@
+{
+  "name": "officing-test-data",
+  "version": "1.0.0",
+  "description": "Test data seed scripts for Officing",
+  "type": "module",
+  "scripts": {
+    "seed": "node seed-test-users.js",
+    "seed:help": "echo 'Usage: SUPABASE_URL=<url> SUPABASE_SERVICE_ROLE_KEY=<key> npm run seed'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

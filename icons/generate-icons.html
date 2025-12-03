@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officing Icon Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4F46E5;
+            margin-bottom: 1rem;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .icon-item {
+            text-align: center;
+        }
+        .icon-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #4F46E5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+        .icon-preview svg {
+            width: 60%;
+            height: 60%;
+        }
+        .icon-label {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        .download-btn {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .download-btn:hover {
+            background: #4338CA;
+        }
+        .instructions {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Officing PWA Icon Generator</h1>
+        
+        <div class="instructions">
+            <strong>使い方:</strong>
+            <ol>
+                <li>各アイコンの「Download」ボタンをクリック</li>
+                <li>ダウンロードしたPNG画像を <code>/icons/</code> ディレクトリに保存</li>
+                <li>ファイル名を適切にリネーム（例: icon-192.png）</li>
+            </ol>
+        </div>
+
+        <div class="icon-grid" id="iconGrid"></div>
+    </div>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function createIcon(size) {
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}">
+                    <rect width="${size}" height="${size}" fill="#4F46E5"/>
+                    <text x="50%" y="40%" 
+                          font-family="Arial, sans-serif" 
+                          font-size="${size * 0.3}" 
+                          font-weight="bold"
+                          fill="white" 
+                          text-anchor="middle" 
+                          dominant-baseline="middle">O</text>
+                    <text x="50%" y="70%" 
+                          font-family="Arial, sans-serif" 
+                          font-size="${size * 0.15}" 
+                          fill="white" 
+                          text-anchor="middle" 
+                          dominant-baseline="middle">出社</text>
+                </svg>
+            `;
+            return svg;
+        }
+        
+        function downloadIcon(size) {
+            const svg = createIcon(size);
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            const img = new Image();
+            const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}.png`;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+            
+            img.src = url;
+        }
+        
+        const grid = document.getElementById('iconGrid');
+        sizes.forEach(size => {
+            const item = document.createElement('div');
+            item.className = 'icon-item';
+            item.innerHTML = `
+                <div class="icon-preview">
+                    ${createIcon(size)}
+                </div>
+                <div class="icon-label">${size}x${size}</div>
+                <button class="download-btn" onclick="downloadIcon(${size})">Download</button>
+            `;
+            grid.appendChild(item);
+        });
+    </script>
+</body>
+</html>

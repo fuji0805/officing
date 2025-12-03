@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Generator Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: URL Building</h2>
+        <button onclick="testUrlBuilding()">Run Test</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Tag Extraction</h2>
+        <button onclick="testTagExtraction()">Run Test</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Filename Sanitization</h2>
+        <button onclick="testFilenameSanitization()">Run Test</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Visual QR Generation</h2>
+        <button onclick="testVisualGeneration()">Generate Test QR</button>
+        <div id="test4-result"></div>
+        <div id="test-qr"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>All Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <div id="all-tests-result"></div>
+    </div>
+
+    <script src="js/qr-generator.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        function showResult(elementId, passed, message) {
+            const element = document.getElementById(elementId);
+            element.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            element.textContent = `${passed ? '✓ PASS' : '✗ FAIL'}: ${message}`;
+        }
+
+        function testUrlBuilding() {
+            const baseUrl = 'https://example.com/officing';
+            const tag = 'officeA';
+            const result = buildCheckInUrl(baseUrl, tag);
+            const expected = 'https://example.com/officing/?tag=officeA';
+            
+            const passed = result === expected;
+            showResult('test1-result', passed, 
+                `Expected: ${expected}, Got: ${result}`);
+            return passed;
+        }
+
+        function testTagExtraction() {
+            const url = 'https://example.com/officing/?tag=officeA';
+            const result = extractTagFromUrl(url);
+            const expected = 'officeA';
+            
+            const passed = result === expected;
+            showResult('test2-result', passed, 
+                `Expected: ${expected}, Got: ${result}`);
+            return passed;
+        }
+
+        function testFilenameSanitization() {
+            const input = 'Office A / Room #1';
+            const result = sanitizeFilename(input);
+            const expected = 'office_a_room_1';
+            
+            const passed = result === expected;
+            showResult('test3-result', passed, 
+                `Expected: ${expected}, Got: ${result}`);
+            return passed;
+        }
+
+        function testVisualGeneration() {
+            const container = document.getElementById('test-qr');
+            container.innerHTML = '';
+            
+            try {
+                const qr = new QRCode(container, {
+                    text: 'https://example.com/officing/?tag=testTag',
+                    width: 128,
+                    height: 128
+                });
+                
+                setTimeout(() => {
+                    const canvas = container.querySelector('canvas');
+                    const passed = canvas !== null;
+                    showResult('test4-result', passed, 
+                        passed ? 'QR code generated successfully' : 'Failed to generate QR code');
+                }, 100);
+            } catch (e) {
+                showResult('test4-result', false, `Error: ${e.message}`);
+            }
+        }
+
+        function runAllTests() {
+            const results = [];
+            results.push(testUrlBuilding());
+            results.push(testTagExtraction());
+            results.push(testFilenameSanitization());
+            
+            const allPassed = results.every(r => r);
+            const passCount = results.filter(r => r).length;
+            
+            showResult('all-tests-result', allPassed, 
+                `${passCount}/${results.length} tests passed`);
+        }
+    </script>
+</body>
+</html>

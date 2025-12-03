@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Demo - Officing</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <div class="quest-screen">
+            <div class="quest-container">
+                <div class="quest-header">
+                    <h1 class="quest-title">📋 デイリークエスト</h1>
+                    <p class="quest-subtitle">クエストを完了して報酬を獲得しよう！</p>
+                </div>
+                
+                <div class="quest-card">
+                    <div class="quest-list">
+                        <!-- Quest Item 1 - S Rank -->
+                        <div class="quest-item">
+                            <div class="quest-item-header">
+                                <div class="quest-rank-badge rank-s">S</div>
+                                <div class="quest-item-title">完璧な一日</div>
+                            </div>
+                            
+                            <div class="quest-item-description">
+                                今日中に3回チェックインする
+                            </div>
+                            
+                            <div class="quest-item-rewards">
+                                <span class="quest-reward">⭐ 1500 XP</span>
+                                <span class="quest-reward">💰 900 ポイント</span>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-sm quest-complete-btn">
+                                完了する
+                            </button>
+                        </div>
+
+                        <!-- Quest Item 2 - A Rank -->
+                        <div class="quest-item">
+                            <div class="quest-item-header">
+                                <div class="quest-rank-badge rank-a">A</div>
+                                <div class="quest-item-title">連続出社</div>
+                            </div>
+                            
+                            <div class="quest-item-description">
+                                3日連続でチェックインする
+                            </div>
+                            
+                            <div class="quest-item-rewards">
+                                <span class="quest-reward">⭐ 600 XP</span>
+                                <span class="quest-reward">💰 400 ポイント</span>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-sm quest-complete-btn">
+                                完了する
+                            </button>
+                        </div>
+
+                        <!-- Quest Item 3 - B Rank (Completed) -->
+                        <div class="quest-item quest-completed">
+                            <div class="quest-item-header">
+                                <div class="quest-rank-badge rank-b">B</div>
+                                <div class="quest-item-title">定時出社</div>
+                                <div class="quest-check">✓</div>
+                            </div>
+                            
+                            <div class="quest-item-description">
+                                午前9時までにチェックインする
+                            </div>
+                            
+                            <div class="quest-item-rewards">
+                                <span class="quest-reward">⭐ 225 XP</span>
+                                <span class="quest-reward">💰 150 ポイント</span>
+                            </div>
+                            
+                            <div class="quest-completed-label">完了済み</div>
+                        </div>
+                    </div>
+                    
+                    <!-- ナビゲーション -->
+                    <div class="quest-actions">
+                        <button onclick="window.location.href='/'" class="btn btn-secondary btn-full">
+                            ダッシュボードへ戻る
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/quest.js"></script>
+</body>
+</html>

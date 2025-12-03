@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スタンプ帳デモ - Officing</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Mock Supabase client for demo
+        window.getSupabaseClient = () => ({
+            from: (table) => ({
+                select: () => ({
+                    eq: () => ({
+                        eq: () => ({
+                            eq: () => ({
+                                order: () => ({
+                                    then: (callback) => {
+                                        // Generate sample stamp data for current month
+                                        const now = new Date();
+                                        const year = now.getFullYear();
+                                        const month = now.getMonth() + 1;
+                                        
+                                        const sampleStamps = [
+                                            {
+                                                id: '1',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-05`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-05T09:15:00Z`,
+                                                tag: 'officeA',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '2',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-06`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-06T08:45:00Z`,
+                                                tag: 'officeB',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '3',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-07`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-07T09:30:00Z`,
+                                                tag: 'officeA',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '4',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-10`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-10T10:00:00Z`,
+                                                tag: 'home',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '5',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-11`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-11T09:00:00Z`,
+                                                tag: 'officeA',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '6',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-12`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-12T08:30:00Z`,
+                                                tag: 'officeB',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '7',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-13`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-13T09:15:00Z`,
+                                                tag: 'officeA',
+                                                month: month,
+                                                year: year
+                                            },
+                                            {
+                                                id: '8',
+                                                user_id: 'demo-user',
+                                                check_in_date: `${year}-${String(month).padStart(2, '0')}-14`,
+                                                check_in_time: `${year}-${String(month).padStart(2, '0')}-14T09:45:00Z`,
+                                                tag: 'officeA',
+                                                month: month,
+                                                year: year
+                                            }
+                                        ];
+                                        
+                                        callback({ data: sampleStamps, error: null });
+                                        return Promise.resolve({ data: sampleStamps, error: null });
+                                    }
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        });
+
+        window.getCurrentUser = () => Promise.resolve({ id: 'demo-user', email: 'demo@example.com' });
+        window.isSessionValid = () => Promise.resolve(true);
+
+        // Mock auth manager
+        window.authManager = {
+            showAuthScreen: () => console.log('Auth required')
+        };
+
+        // Load stamp manager
+        class StampManager {
+            constructor() {
+                this.currentYear = new Date().getFullYear();
+                this.currentMonth = new Date().getMonth() + 1;
+                this.stamps = [];
+            }
+
+            async showStampCollectionScreen() {
+                const appDiv = document.getElementById('app');
+                if (!appDiv) return;
+
+                await this.loadStamps(this.currentYear, this.currentMonth);
+
+                appDiv.innerHTML = `
+                    <div class="stamp-collection-screen">
+                        <div class="stamp-collection-container">
+                            <div class="stamp-collection-header">
+                                <h1 class="stamp-collection-title">📅 スタンプ帳</h1>
+                            </div>
+                            
+                            <div class="stamp-collection-card">
+                                <div class="stamp-month-nav">
+                                    <button class="btn-month-nav" onclick="stampManager.navigateMonth(-1)">
+                                        ◀ 前月
+                                    </button>
+                                    <div class="stamp-current-month" id="current-month-display">
+                                        ${this.currentYear}年 ${this.currentMonth}月
+                                    </div>
+                                    <button class="btn-month-nav" onclick="stampManager.navigateMonth(1)">
+                                        次月 ▶
+                                    </button>
+                                </div>
+                                
+                                <div class="stamp-calendar" id="stamp-calendar">
+                                    ${this.renderCalendar()}
+                                </div>
+                                
+                                <div class="stamp-detail-modal" id="stamp-detail-modal" style="display: none;">
+                                    <div class="stamp-detail-content">
+                                        <div class="stamp-detail-header">
+                                            <h3 class="stamp-detail-title">スタンプ詳細</h3>
+                                            <button class="stamp-detail-close" onclick="stampManager.closeStampDetail()">✕</button>
+                                        </div>
+                                        <div class="stamp-detail-body" id="stamp-detail-body"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stamp-collection-actions">
+                                    <button onclick="alert('ダッシュボードへ戻る')" class="btn btn-secondary btn-full">
+                                        ダッシュボードへ戻る
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async loadStamps(year, month) {
+                try {
+                    const client = getSupabaseClient();
+                    const { data, error } = await client.from('attendances')
+                        .select('*')
+                        .eq('user_id', 'demo-user')
+                        .eq('year', year)
+                        .eq('month', month)
+                        .order('check_in_date', { ascending: true });
+
+                    if (error) throw error;
+                    this.stamps = data || [];
+                    console.log(`✅ Loaded ${this.stamps.length} stamps for ${year}/${month}`);
+                    return this.stamps;
+                } catch (error) {
+                    console.error('❌ Failed to load stamps:', error);
+                    this.stamps = [];
+                    return [];
+                }
+            }
+
+            renderCalendar() {
+                const firstDay = new Date(this.currentYear, this.currentMonth - 1, 1);
+                const lastDay = new Date(this.currentYear, this.currentMonth, 0);
+                const daysInMonth = lastDay.getDate();
+                const startDayOfWeek = firstDay.getDay();
+
+                const stampMap = new Map();
+                this.stamps.forEach(stamp => {
+                    const date = new Date(stamp.check_in_date);
+                    const day = date.getDate();
+                    stampMap.set(day, stamp);
+                });
+
+                let html = '<div class="calendar-grid">';
+                
+                const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+                weekdays.forEach(day => {
+                    html += `<div class="calendar-weekday">${day}</div>`;
+                });
+
+                for (let i = 0; i < startDayOfWeek; i++) {
+                    html += '<div class="calendar-day calendar-day-empty"></div>';
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const stamp = stampMap.get(day);
+                    const hasStamp = !!stamp;
+                    const isToday = this.isToday(this.currentYear, this.currentMonth, day);
+                    
+                    let dayClass = 'calendar-day';
+                    if (hasStamp) dayClass += ' calendar-day-stamped';
+                    if (isToday) dayClass += ' calendar-day-today';
+                    
+                    const clickHandler = hasStamp ? `onclick="stampManager.showStampDetail(${day})"` : '';
+                    
+                    html += `
+                        <div class="${dayClass}" ${clickHandler}>
+                            <div class="calendar-day-number">${day}</div>
+                            ${hasStamp ? '<div class="calendar-stamp-icon">🎫</div>' : ''}
+                        </div>
+                    `;
+                }
+
+                html += '</div>';
+                
+                if (this.stamps.length === 0) {
+                    html += `
+                        <div class="stamp-empty-state">
+                            <div class="stamp-empty-icon">📭</div>
+                            <div class="stamp-empty-text">この月のスタンプはまだありません</div>
+                        </div>
+                    `;
+                }
+
+                return html;
+            }
+
+            isToday(year, month, day) {
+                const today = new Date();
+                return today.getFullYear() === year &&
+                       today.getMonth() + 1 === month &&
+                       today.getDate() === day;
+            }
+
+            async navigateMonth(direction) {
+                this.currentMonth += direction;
+                
+                if (this.currentMonth < 1) {
+                    this.currentMonth = 12;
+                    this.currentYear--;
+                } else if (this.currentMonth > 12) {
+                    this.currentMonth = 1;
+                    this.currentYear++;
+                }
+
+                await this.loadStamps(this.currentYear, this.currentMonth);
+
+                const monthDisplay = document.getElementById('current-month-display');
+                if (monthDisplay) {
+                    monthDisplay.textContent = `${this.currentYear}年 ${this.currentMonth}月`;
+                }
+
+                const calendar = document.getElementById('stamp-calendar');
+                if (calendar) {
+                    calendar.innerHTML = this.renderCalendar();
+                }
+            }
+
+            showStampDetail(day) {
+                const stamp = this.stamps.find(s => {
+                    const date = new Date(s.check_in_date);
+                    return date.getDate() === day;
+                });
+
+                if (!stamp) return;
+
+                const checkInDate = new Date(stamp.check_in_time);
+                const dateStr = this.formatDate(checkInDate);
+                const timeStr = this.formatTime(checkInDate);
+
+                const modal = document.getElementById('stamp-detail-modal');
+                const body = document.getElementById('stamp-detail-body');
+                
+                if (modal && body) {
+                    body.innerHTML = `
+                        <div class="stamp-detail-stamp">
+                            <div class="stamp-detail-icon">🎫</div>
+                            <div class="stamp-detail-date">${dateStr}</div>
+                            <div class="stamp-detail-time">${timeStr}</div>
+                        </div>
+                        <div class="stamp-detail-info">
+                            <div class="stamp-detail-row">
+                                <span class="stamp-detail-label">📍 場所</span>
+                                <span class="stamp-detail-value">${stamp.tag}</span>
+                            </div>
+                            <div class="stamp-detail-row">
+                                <span class="stamp-detail-label">📅 日付</span>
+                                <span class="stamp-detail-value">${dateStr}</span>
+                            </div>
+                            <div class="stamp-detail-row">
+                                <span class="stamp-detail-label">🕐 時刻</span>
+                                <span class="stamp-detail-value">${timeStr}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    modal.style.display = 'flex';
+                }
+            }
+
+            closeStampDetail() {
+                const modal = document.getElementById('stamp-detail-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+                const weekday = weekdays[date.getDay()];
+                return `${year}年${month}月${day}日 (${weekday})`;
+            }
+
+            formatTime(date) {
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+        }
+
+        const stampManager = new StampManager();
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await stampManager.showStampCollectionScreen();
+        });
+    </script>
+</body>
+</html>

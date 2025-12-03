@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Design Test - Officing</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="container" style="padding: 2rem;">
+    <h1 class="text-center mb-xl">UI Design & Styling Test</h1>
+    
+    <!-- Loading States -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Loading States</h2>
+      <div class="flex gap-lg items-center mb-md">
+        <div class="spinner"></div>
+        <span>Standard Spinner</span>
+      </div>
+      <div class="skeleton skeleton-text mb-sm"></div>
+      <div class="skeleton skeleton-text skeleton-text-short mb-sm"></div>
+      <div class="skeleton skeleton-title mb-md"></div>
+      <div class="skeleton skeleton-card"></div>
+    </section>
+
+    <!-- Buttons -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Button Styles</h2>
+      <div class="flex gap-md flex-wrap">
+        <button class="btn btn-primary">Primary Button</button>
+        <button class="btn btn-secondary">Secondary Button</button>
+        <button class="btn btn-success">Success Button</button>
+        <button class="btn btn-danger">Danger Button</button>
+        <button class="btn btn-warning">Warning Button</button>
+        <button class="btn btn-primary" disabled>Disabled Button</button>
+      </div>
+    </section>
+
+    <!-- Messages -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Message Styles</h2>
+      <div class="success-message mb-md">
+        <span class="success-message-icon">✓</span>
+        <span>This is a success message!</span>
+      </div>
+      <div class="error-message mb-md">
+        <span class="error-message-icon">✕</span>
+        <span>This is an error message!</span>
+      </div>
+      <div class="warning-message mb-md">
+        <span class="warning-message-icon">⚠</span>
+        <span>This is a warning message!</span>
+      </div>
+      <div class="info-message">
+        <span class="info-message-icon">ℹ</span>
+        <span>This is an info message!</span>
+      </div>
+    </section>
+
+    <!-- Animations -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Animation Examples</h2>
+      <div class="flex gap-lg flex-wrap">
+        <div class="fade-in" style="padding: 1rem; background: #EDE9FE; border-radius: 0.5rem;">
+          Fade In
+        </div>
+        <div class="slide-down" style="padding: 1rem; background: #FEF3C7; border-radius: 0.5rem;">
+          Slide Down
+        </div>
+        <div class="scale-in" style="padding: 1rem; background: #D1FAE5; border-radius: 0.5rem;">
+          Scale In
+        </div>
+        <div class="bounce-in" style="padding: 1rem; background: #DBEAFE; border-radius: 0.5rem;">
+          Bounce In
+        </div>
+      </div>
+    </section>
+
+    <!-- Confetti Test -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Confetti Animation</h2>
+      <button class="btn btn-primary" onclick="showConfetti()">Show Confetti</button>
+      <div id="confetti-test" class="confetti-container" style="position: relative; height: 200px; display: none;"></div>
+    </section>
+
+    <!-- Toast Notification Test -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Toast Notifications</h2>
+      <div class="flex gap-md flex-wrap">
+        <button class="btn btn-success" onclick="showToast('success')">Success Toast</button>
+        <button class="btn btn-danger" onclick="showToast('error')">Error Toast</button>
+        <button class="btn btn-warning" onclick="showToast('warning')">Warning Toast</button>
+        <button class="btn btn-primary" onclick="showToast('info')">Info Toast</button>
+      </div>
+    </section>
+
+    <!-- Responsive Grid -->
+    <section class="card mb-xl">
+      <h2 class="mb-lg">Responsive Grid</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div class="card" style="background: #EDE9FE;">Grid Item 1</div>
+        <div class="card" style="background: #FEF3C7;">Grid Item 2</div>
+        <div class="card" style="background: #D1FAE5;">Grid Item 3</div>
+        <div class="card" style="background: #DBEAFE;">Grid Item 4</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    // Confetti test
+    function showConfetti() {
+      const container = document.getElementById('confetti-test');
+      container.style.display = 'block';
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        container.appendChild(confetti);
+      }
+      
+      setTimeout(() => {
+        container.style.display = 'none';
+      }, 3000);
+    }
+
+    // Toast notification test
+    function showToast(type) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification show';
+      
+      const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+      };
+      
+      const messages = {
+        success: 'Operation completed successfully!',
+        error: 'An error occurred!',
+        warning: 'Please be careful!',
+        info: 'Here is some information.'
+      };
+      
+      toast.innerHTML = `
+        <div class="toast-content toast-${type}">
+          <span class="toast-icon">${icons[type]}</span>
+          <span class="toast-message">${messages[type]}</span>
+          <button class="toast-close" onclick="this.closest('.toast-notification').remove()">×</button>
+        </div>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

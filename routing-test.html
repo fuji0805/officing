@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ルーティングテスト - Officing</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+        .test-section {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        .test-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        .test-link {
+            display: block;
+            padding: var(--spacing-md);
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+        .test-link:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .test-info {
+            background: var(--bg-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-md);
+        }
+        .test-info code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="test-container">
+            <div class="test-section">
+                <h1 class="test-title">🧪 ルーティング & ナビゲーションテスト</h1>
+                <p>このページでは、クライアントサイドルーティングとナビゲーションメニューの動作を確認できます。</p>
+                
+                <div class="test-info">
+                    <strong>テスト項目:</strong>
+                    <ul>
+                        <li>✅ クライアントサイドルーティング（ページリロードなし）</li>
+                        <li>✅ ナビゲーションメニュー（デスクトップ/モバイル）</li>
+                        <li>✅ ページ遷移アニメーション</li>
+                        <li>✅ ブラウザの戻る/進むボタン対応</li>
+                        <li>✅ アクティブリンクのハイライト</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2 class="test-title">📱 ナビゲーションリンク</h2>
+                <p>以下のリンクをクリックして、ページ遷移を確認してください。ページがリロードされずに遷移することを確認してください。</p>
+                
+                <div class="test-links">
+                    <a href="/" data-link class="test-link">🏠 ホーム</a>
+                    <a href="/stamps" data-link class="test-link">📅 スタンプ帳</a>
+                    <a href="/lottery" data-link class="test-link">🎰 くじ</a>
+                    <a href="/quests" data-link class="test-link">📋 クエスト</a>
+                    <a href="/shop" data-link class="test-link">🛒 ショップ</a>
+                    <a href="/profile" data-link class="test-link">👤 プロフィール</a>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2 class="test-title">🔙 戻るボタンテスト</h2>
+                <p>複数のページを遷移した後、ブラウザの戻るボタンを押して、正しく前のページに戻ることを確認してください。</p>
+                
+                <div class="test-info">
+                    <strong>手順:</strong>
+                    <ol>
+                        <li>上のリンクから複数のページに遷移</li>
+                        <li>ブラウザの戻るボタンを押す</li>
+                        <li>前のページに戻ることを確認</li>
+                        <li>進むボタンでも正しく動作することを確認</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2 class="test-title">📱 モバイルメニューテスト</h2>
+                <p>画面幅を狭くして（またはモバイルデバイスで）、ハンバーガーメニューが正しく動作することを確認してください。</p>
+                
+                <div class="test-info">
+                    <strong>確認項目:</strong>
+                    <ul>
+                        <li>ハンバーガーアイコンが表示される</li>
+                        <li>クリックでメニューがスライドイン</li>
+                        <li>オーバーレイが表示される</li>
+                        <li>オーバーレイクリックでメニューが閉じる</li>
+                        <li>ESCキーでメニューが閉じる</li>
+                        <li>リンククリックでメニューが閉じる</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2 class="test-title">✨ アニメーションテスト</h2>
+                <p>ページ遷移時にフェードイン/アウトのアニメーションが表示されることを確認してください。</p>
+                
+                <div class="test-info">
+                    <strong>期待される動作:</strong>
+                    <ul>
+                        <li>リンククリック時: 現在のページがフェードアウト</li>
+                        <li>新しいページがフェードイン</li>
+                        <li>スムーズな遷移（150ms）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2 class="test-title">🔍 現在のルート情報</h2>
+                <div class="test-info">
+                    <p><strong>現在のパス:</strong> <code id="current-path">-</code></p>
+                    <p><strong>正規化されたパス:</strong> <code id="normalized-path">-</code></p>
+                    <p><strong>ページタイトル:</strong> <code id="page-title">-</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/router.js"></script>
+    <script src="/js/navigation.js"></script>
+    
+    <script>
+        // ルーターを初期化（認証なしでテスト）
+        document.addEventListener('DOMContentLoaded', () => {
+            // テスト用のダミールートを登録
+            router.register('/', async () => {
+                console.log('Home route');
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'ホーム - Officing' });
+
+            router.register('/stamps', async () => {
+                console.log('Stamps route');
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📅 スタンプ帳ページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'スタンプ帳 - Officing' });
+
+            router.register('/lottery', async () => {
+                console.log('Lottery route');
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🎰 くじページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'くじ - Officing' });
+
+            router.register('/quests', async () => {
+                console.log('Quests route');
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📋 クエストページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'クエスト - Officing' });
+
+            router.register('/shop', async () => {
+                console.log('Shop route');
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🛒 ショップページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'ショップ - Officing' });
+
+            router.register('/profile', async () => {
+                console.log('Profile route');
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>👤 プロフィールページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                updateRouteInfo();
+            }, { requireAuth: false, title: 'プロフィール - Officing' });
+
+            // ナビゲーション後のコールバック
+            router.afterNavigate((path) => {
+                navigationManager.updateActiveLink(path);
+                updateRouteInfo();
+            });
+
+            // ナビゲーションメニューをマウント
+            navigationManager.mount(window.location.pathname);
+
+            // ルーターを初期化
+            router.init();
+
+            // 初期表示
+            updateRouteInfo();
+        });
+
+        function updateRouteInfo() {
+            const currentPath = window.location.pathname;
+            const normalizedPath = router.normalizePath(currentPath);
+            const pageTitle = document.title;
+
+            document.getElementById('current-path').textContent = currentPath;
+            document.getElementById('normalized-path').textContent = normalizedPath;
+            document.getElementById('page-title').textContent = pageTitle;
+        }
+    </script>
+</body>
+</html>

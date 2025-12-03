@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チェックイン成功画面デモ</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // デモ用のモックデータ
+        const mockResult = {
+            success: true,
+            tag: 'officeA',
+            monthlyCount: 8,
+            streak: {
+                currentStreak: 5,
+                maxStreak: 7,
+                isNewRecord: false
+            },
+            ticketsEarned: 1,
+            newTitles: [
+                {
+                    name: '出社マスター',
+                    description: '月8回の出社を達成しました！'
+                }
+            ]
+        };
+
+        // アプリクラスの簡易版
+        class DemoApp {
+            formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}/${month}/${day}`;
+            }
+
+            formatTime(date) {
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
+            calculateLotteryCountdown(monthlyCount) {
+                const milestones = [4, 8, 12];
+                let nextMilestone = milestones.find(m => m > monthlyCount);
+                
+                if (!nextMilestone) {
+                    nextMilestone = Math.ceil(monthlyCount / 4) * 4 + 4;
+                }
+                
+                const justEarned = milestones.includes(monthlyCount) || 
+                                   (monthlyCount > 12 && monthlyCount % 4 === 0);
+                
+                return {
+                    milestone: nextMilestone,
+                    remaining: nextMilestone - monthlyCount,
+                    earned: justEarned
+                };
+            }
+
+            showCheckinSuccess(result) {
+                const appDiv = document.getElementById('app');
+                if (!appDiv) return;
+
+                const now = new Date();
+                const dateStr = this.formatDate(now);
+                const timeStr = this.formatTime(now);
+                const lotteryInfo = this.calculateLotteryCountdown(result.monthlyCount);
+
+                appDiv.innerHTML = `
+                    <div class="checkin-success-screen">
+                        <div class="confetti-container" id="confetti-container"></div>
+                        
+                        <div class="checkin-container">
+                            <div class="checkin-header">
+                                <h1 class="checkin-title">✅ チェックイン成功！</h1>
+                            </div>
+                            
+                            <div class="checkin-card">
+                                <div class="checkin-stamp">
+                                    <span class="stamp-icon">🎫</span>
+                                    <div class="stamp-date">${dateStr} ${timeStr}</div>
+                                    <div class="stamp-tag">📍 ${result.tag}</div>
+                                </div>
+                                
+                                <div class="checkin-metrics">
+                                    <div class="metric-card">
+                                        <span class="metric-value">📅 ${result.monthlyCount}</span>
+                                        <span class="metric-label">今月の出社</span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-value"><span class="streak-fire">🔥</span> ${result.streak.currentStreak}</span>
+                                        <span class="metric-label">連続出社</span>
+                                    </div>
+                                </div>
+                                
+                                ${result.streak.isNewRecord ? '<div class="streak-record">🎉 新記録達成！</div>' : ''}
+                                
+                                <div class="lottery-countdown ${lotteryInfo.earned ? 'lottery-earned' : ''}">
+                                    <div class="lottery-countdown-title">
+                                        ${lotteryInfo.earned ? '🎉 くじチケット獲得！' : '次のくじチケットまで'}
+                                    </div>
+                                    <div class="lottery-countdown-value">
+                                        ${lotteryInfo.earned ? '🎫 +1' : `あと ${lotteryInfo.remaining} 回`}
+                                    </div>
+                                    <div class="lottery-countdown-subtitle">
+                                        ${lotteryInfo.earned ? `${lotteryInfo.milestone}回達成` : `${lotteryInfo.milestone}回で獲得`}
+                                    </div>
+                                </div>
+                                
+                                <div class="checkin-actions">
+                                    <button onclick="location.reload()" class="btn btn-primary btn-full">
+                                        もう一度見る
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this.startConfetti();
+
+                if (result.newTitles && result.newTitles.length > 0) {
+                    setTimeout(() => {
+                        this.showTitleAcquisition(result.newTitles[0]);
+                    }, 1000);
+                }
+            }
+
+            startConfetti() {
+                const container = document.getElementById('confetti-container');
+                if (!container) return;
+
+                const colors = ['#FCD34D', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'];
+                const confettiCount = 50;
+
+                for (let i = 0; i < confettiCount; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                        
+                        container.appendChild(confetti);
+                        
+                        setTimeout(() => {
+                            confetti.remove();
+                        }, 4000);
+                    }, i * 30);
+                }
+            }
+
+            showTitleAcquisition(title) {
+                const overlay = document.createElement('div');
+                overlay.className = 'title-acquisition';
+                overlay.innerHTML = `
+                    <div class="title-acquisition-content">
+                        <div class="title-acquisition-icon">👑</div>
+                        <div class="title-acquisition-title">称号獲得！</div>
+                        <div class="title-acquisition-name">${title.name}</div>
+                        <div class="title-acquisition-description">${title.description || ''}</div>
+                        <button class="title-acquisition-close" onclick="this.closest('.title-acquisition').remove()">
+                            続ける
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(overlay);
+            }
+        }
+
+        // デモを実行
+        const app = new DemoApp();
+        app.showCheckinSuccess(mockResult);
+    </script>
+</body>
+</html>

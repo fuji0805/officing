@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Officing - ログイン">
+    <meta name="theme-color" content="#4F46E5">
+    <title>ログイン - Officing</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <div class="loading-screen">
+            <div class="spinner"></div>
+            <p>読み込み中...</p>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-handler.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('Login page loaded');
+            
+            // Initialize Supabase
+            const client = initSupabase();
+            if (!client) {
+                document.getElementById('app').innerHTML = `
+                    <div class="error-screen">
+                        <h1>エラー</h1>
+                        <p>Supabaseの初期化に失敗しました</p>
+                        <p>js/config.js の設定を確認してください</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Check if already logged in
+            const session = await getCurrentSession();
+            if (session) {
+                console.log('Already logged in, redirecting...');
+                const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
+                window.location.href = returnUrl;
+                return;
+            }
+            
+            // Get return URL from query params
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl') || '/';
+            
+            // Show auth screen
+            authManager.showAuthScreen({ returnUrl });
+            
+            // Listen for auth state changes
+            onAuthStateChange((event, session) => {
+                console.log('Auth event:', event);
+                if (event === 'SIGNED_IN' && session) {
+                    console.log('Sign in successful, redirecting...');
+                    authManager.handleAuthSuccess();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

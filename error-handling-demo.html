@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Handling Demo - Officing</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .demo-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .demo-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-section h2 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .demo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .demo-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .form-group input {
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-warning {
+      background: var(--warning-color);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+    }
+
+    .btn-secondary {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>エラーハンドリング デモ</h1>
+    <p>各種エラーハンドリング機能のデモンストレーション</p>
+
+    <!-- Error Notifications -->
+    <div class="demo-section">
+      <h2>1. エラー通知</h2>
+      <p>様々なタイプのエラー通知を表示します</p>
+      <div class="demo-buttons">
+        <button class="btn btn-danger" onclick="showErrorDemo()">エラー通知</button>
+        <button class="btn btn-warning" onclick="showWarningDemo()">警告通知</button>
+        <button class="btn btn-primary" onclick="showInfoDemo()">情報通知</button>
+        <button class="btn btn-secondary" onclick="showSuccessDemo()">成功通知</button>
+      </div>
+    </div>
+
+    <!-- Network Errors -->
+    <div class="demo-section">
+      <h2>2. ネットワークエラー</h2>
+      <p>ネットワークエラーのシミュレーション</p>
+      <div class="demo-buttons">
+        <button class="btn btn-danger" onclick="simulateNetworkError()">ネットワークエラー</button>
+        <button class="btn btn-danger" onclick="simulateTimeoutError()">タイムアウトエラー</button>
+        <button class="btn btn-danger" onclick="simulateOfflineError()">オフラインエラー</button>
+      </div>
+    </div>
+
+    <!-- Auth Errors -->
+    <div class="demo-section">
+      <h2>3. 認証エラー</h2>
+      <p>認証関連のエラーシミュレーション</p>
+      <div class="demo-buttons">
+        <button class="btn btn-danger" onclick="simulateAuthError()">認証エラー</button>
+        <button class="btn btn-danger" onclick="simulateSessionExpired()">セッション期限切れ</button>
+        <button class="btn btn-danger" onclick="simulatePermissionError()">権限エラー</button>
+      </div>
+    </div>
+
+    <!-- Validation Errors -->
+    <div class="demo-section">
+      <h2>4. バリデーションエラー</h2>
+      <p>フォームバリデーションのデモ</p>
+      <form class="demo-form" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label for="demo-email">メールアドレス</label>
+          <input type="text" id="demo-email" name="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label for="demo-tag">タグ</label>
+          <input type="text" id="demo-tag" name="tag" placeholder="office-a">
+        </div>
+        <div class="form-group">
+          <label for="demo-points">ポイント数</label>
+          <input type="text" id="demo-points" name="points" placeholder="100">
+        </div>
+        <button type="submit" class="btn btn-primary">バリデーション実行</button>
+      </form>
+    </div>
+
+    <!-- Retry Logic -->
+    <div class="demo-section">
+      <h2>5. リトライロジック</h2>
+      <p>Exponential backoffでのリトライデモ</p>
+      <div class="demo-buttons">
+        <button class="btn btn-primary" onclick="demonstrateRetry()">リトライデモ（成功）</button>
+        <button class="btn btn-danger" onclick="demonstrateRetryFail()">リトライデモ（失敗）</button>
+      </div>
+      <div id="retry-log" style="margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 0.25rem; font-family: monospace; font-size: 0.875rem; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- Error with Actions -->
+    <div class="demo-section">
+      <h2>6. アクション付きエラー</h2>
+      <p>ユーザーアクションを含むエラー通知</p>
+      <div class="demo-buttons">
+        <button class="btn btn-danger" onclick="showErrorWithActions()">アクション付きエラー</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/error-handler.js"></script>
+  <script src="js/validation.js"></script>
+
+  <script>
+    // 1. Error Notifications
+    function showErrorDemo() {
+      errorHandler.showError('これはエラーメッセージです。何か問題が発生しました。', {
+        title: 'エラー',
+        type: 'error',
+        duration: 5000
+      });
+    }
+
+    function showWarningDemo() {
+      errorHandler.showError('これは警告メッセージです。注意が必要です。', {
+        title: '警告',
+        type: 'warning',
+        duration: 5000
+      });
+    }
+
+    function showInfoDemo() {
+      errorHandler.showError('これは情報メッセージです。お知らせがあります。', {
+        title: '情報',
+        type: 'info',
+        duration: 5000
+      });
+    }
+
+    function showSuccessDemo() {
+      errorHandler.showError('これは成功メッセージです。操作が完了しました。', {
+        title: '成功',
+        type: 'success',
+        duration: 5000
+      });
+    }
+
+    // 2. Network Errors
+    function simulateNetworkError() {
+      const error = new Error('Failed to fetch');
+      error.name = 'NetworkError';
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: 'ネットワークエラー',
+        type: 'error'
+      });
+    }
+
+    function simulateTimeoutError() {
+      const error = new Error('Request timeout');
+      error.name = 'TimeoutError';
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: 'タイムアウト',
+        type: 'error'
+      });
+    }
+
+    function simulateOfflineError() {
+      const error = new Error('Network offline');
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: 'オフライン',
+        type: 'error'
+      });
+    }
+
+    // 3. Auth Errors
+    function simulateAuthError() {
+      const error = new Error('User not authenticated');
+      error.status = 401;
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: '認証エラー',
+        type: 'error',
+        actions: [
+          {
+            id: 'login',
+            label: 'ログイン',
+            handler: () => alert('ログイン画面へ遷移')
+          }
+        ]
+      });
+    }
+
+    function simulateSessionExpired() {
+      const error = new Error('Session expired');
+      error.status = 401;
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: 'セッション期限切れ',
+        type: 'error',
+        actions: [
+          {
+            id: 'reauth',
+            label: '再ログイン',
+            handler: () => alert('再ログイン処理')
+          }
+        ]
+      });
+    }
+
+    function simulatePermissionError() {
+      const error = new Error('Permission denied');
+      error.status = 403;
+      const errorInfo = errorHandler.handleError(error, { operation: 'demo' });
+      errorHandler.showError(errorInfo.message, {
+        title: '権限エラー',
+        type: 'error'
+      });
+    }
+
+    // 4. Validation Errors
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      // Clear previous errors
+      errorHandler.clearValidationErrors();
+
+      const formData = new FormData(event.target);
+      const values = {
+        email: formData.get('email'),
+        tag: formData.get('tag'),
+        points: formData.get('points')
+      };
+
+      const rules = {
+        email: {
+          required: true,
+          type: 'email',
+          label: 'メールアドレス'
+        },
+        tag: {
+          required: true,
+          label: 'タグ',
+          custom: (value) => Validator.validateTag(value)
+        },
+        points: {
+          required: true,
+          type: 'number',
+          min: 0,
+          max: 10000,
+          integer: true,
+          label: 'ポイント数'
+        }
+      };
+
+      const valid = Validator.validateAndShowErrors(rules, values);
+
+      if (valid) {
+        errorHandler.showError('バリデーション成功！すべての入力が正しいです。', {
+          title: '成功',
+          type: 'success',
+          duration: 3000
+        });
+      }
+    }
+
+    // 5. Retry Logic
+    function demonstrateRetry() {
+      const logDiv = document.getElementById('retry-log');
+      logDiv.innerHTML = '<div>リトライデモを開始...</div>';
+
+      let attemptCount = 0;
+
+      errorHandler.retryWithBackoff(
+        async () => {
+          attemptCount++;
+          logDiv.innerHTML += `<div>試行 ${attemptCount}...</div>`;
+          
+          // 3回目で成功
+          if (attemptCount < 3) {
+            throw new Error('Temporary failure');
+          }
+          
+          return { success: true };
+        },
+        {
+          maxRetries: 5,
+          baseDelay: 500,
+          context: { operation: 'demo-retry' },
+          onRetry: (attempt, maxRetries, delay) => {
+            logDiv.innerHTML += `<div>リトライ ${attempt}/${maxRetries} (${Math.round(delay)}ms後)</div>`;
+          }
+        }
+      ).then(() => {
+        logDiv.innerHTML += '<div style="color: green; font-weight: bold;">✅ 成功！</div>';
+      }).catch((error) => {
+        logDiv.innerHTML += `<div style="color: red; font-weight: bold;">❌ 失敗: ${error.message}</div>`;
+      });
+    }
+
+    function demonstrateRetryFail() {
+      const logDiv = document.getElementById('retry-log');
+      logDiv.innerHTML = '<div>リトライデモを開始（失敗パターン）...</div>';
+
+      let attemptCount = 0;
+
+      errorHandler.retryWithBackoff(
+        async () => {
+          attemptCount++;
+          logDiv.innerHTML += `<div>試行 ${attemptCount}...</div>`;
+          
+          // 常に失敗
+          throw new Error('Persistent failure');
+        },
+        {
+          maxRetries: 3,
+          baseDelay: 500,
+          context: { operation: 'demo-retry-fail' },
+          onRetry: (attempt, maxRetries, delay) => {
+            logDiv.innerHTML += `<div>リトライ ${attempt}/${maxRetries} (${Math.round(delay)}ms後)</div>`;
+          }
+        }
+      ).then(() => {
+        logDiv.innerHTML += '<div style="color: green; font-weight: bold;">✅ 成功！</div>';
+      }).catch((error) => {
+        logDiv.innerHTML += `<div style="color: red; font-weight: bold;">❌ 最大リトライ回数に達しました: ${error.message}</div>`;
+      });
+    }
+
+    // 6. Error with Actions
+    function showErrorWithActions() {
+      errorHandler.showError('操作に失敗しました。再試行するか、サポートに連絡してください。', {
+        title: 'エラー',
+        type: 'error',
+        duration: 0, // 手動で閉じるまで表示
+        actions: [
+          {
+            id: 'retry',
+            label: '再試行',
+            handler: () => {
+              alert('再試行処理を実行');
+            }
+          },
+          {
+            id: 'support',
+            label: 'サポート',
+            handler: () => {
+              alert('サポートページへ遷移');
+            }
+          }
+        ]
+      });
+    }
+  </script>
+</body>
+</html>
