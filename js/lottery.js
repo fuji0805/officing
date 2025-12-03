@@ -89,7 +89,7 @@ class LotteryManager {
               
               <!-- ナビゲーション -->
               <div class="lottery-actions">
-                <button onclick="window.location.href='/'" class="btn btn-secondary btn-full">
+                <button onclick="if(typeof dashboardManager !== 'undefined') { dashboardManager.isLoading = false; dashboardManager.showDashboard(); }" class="btn btn-secondary btn-full">
                   ダッシュボードへ戻る
                 </button>
               </div>
@@ -107,6 +107,11 @@ class LotteryManager {
           </div>
         </div>
       `;
+      
+      // ナビゲーションバーをマウント
+      if (typeof navigationManager !== 'undefined') {
+        navigationManager.mount('/lottery', userData.total_points);
+      }
     } catch (error) {
       console.error('Failed to show lottery screen:', error);
       this.showError('くじ画面の表示に失敗しました');
