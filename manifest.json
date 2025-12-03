@@ -2,8 +2,8 @@
   "name": "Officing - 出社チェックインゲーム",
   "short_name": "Officing",
   "description": "QRコードベースの出社チェックインゲーミフィケーションアプリ",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4F46E5",
@@ -13,7 +13,7 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/icons/icon-72.png",
+      "src": "./icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any maskable"
@@ -25,10 +25,10 @@
       "name": "チェックイン",
       "short_name": "チェックイン",
       "description": "QRコードでチェックイン",
-      "url": "/?action=checkin",
+      "url": "./?action=checkin",
       "icons": [
         {
-          "src": "/icons/icon-72.png",
+          "src": "./icons/icon-72.png",
           "sizes": "72x72"
         }
       ]
@@ -37,10 +37,10 @@
       "name": "ダッシュボード",
       "short_name": "ダッシュボード",
       "description": "ホーム画面を表示",
-      "url": "/",
+      "url": "./",
       "icons": [
         {
-          "src": "/icons/icon-72.png",
+          "src": "./icons/icon-72.png",
           "sizes": "72x72"
         }
       ]

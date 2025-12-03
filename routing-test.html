@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ルーティングテスト - Officing</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
     <style>
         .test-container {
             max-width: 800px;
@@ -84,12 +84,12 @@
                 <p>以下のリンクをクリックして、ページ遷移を確認してください。ページがリロードされずに遷移することを確認してください。</p>
                 
                 <div class="test-links">
-                    <a href="/" data-link class="test-link">🏠 ホーム</a>
-                    <a href="/stamps" data-link class="test-link">📅 スタンプ帳</a>
-                    <a href="/lottery" data-link class="test-link">🎰 くじ</a>
-                    <a href="/quests" data-link class="test-link">📋 クエスト</a>
-                    <a href="/shop" data-link class="test-link">🛒 ショップ</a>
-                    <a href="/profile" data-link class="test-link">👤 プロフィール</a>
+                    <a href="./" data-link class="test-link">🏠 ホーム</a>
+                    <a href="./stamps" data-link class="test-link">📅 スタンプ帳</a>
+                    <a href="./lottery" data-link class="test-link">🎰 くじ</a>
+                    <a href="./quests" data-link class="test-link">📋 クエスト</a>
+                    <a href="./shop" data-link class="test-link">🛒 ショップ</a>
+                    <a href="./profile" data-link class="test-link">👤 プロフィール</a>
                 </div>
             </div>
 
@@ -151,10 +151,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/js/config.js"></script>
-    <script src="/js/supabase-client.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/navigation.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase-client.js"></script>
+    <script src="./js/router.js"></script>
+    <script src="./js/navigation.js"></script>
     
     <script>
         // ルーターを初期化（認証なしでテスト）
@@ -167,31 +167,31 @@
 
             router.register('/stamps', async () => {
                 console.log('Stamps route');
-                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📅 スタンプ帳ページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📅 スタンプ帳ページ</h1><p>ルーティングが正常に動作しています！</p><a href="./" data-link class="btn btn-primary">ホームに戻る</a></div>';
                 updateRouteInfo();
             }, { requireAuth: false, title: 'スタンプ帳 - Officing' });
 
             router.register('/lottery', async () => {
                 console.log('Lottery route');
-                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🎰 くじページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🎰 くじページ</h1><p>ルーティングが正常に動作しています！</p><a href="./" data-link class="btn btn-primary">ホームに戻る</a></div>';
                 updateRouteInfo();
             }, { requireAuth: false, title: 'くじ - Officing' });
 
             router.register('/quests', async () => {
                 console.log('Quests route');
-                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📋 クエストページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>📋 クエストページ</h1><p>ルーティングが正常に動作しています！</p><a href="./" data-link class="btn btn-primary">ホームに戻る</a></div>';
                 updateRouteInfo();
             }, { requireAuth: false, title: 'クエスト - Officing' });
 
             router.register('/shop', async () => {
                 console.log('Shop route');
-                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🛒 ショップページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>🛒 ショップページ</h1><p>ルーティングが正常に動作しています！</p><a href="./" data-link class="btn btn-primary">ホームに戻る</a></div>';
                 updateRouteInfo();
             }, { requireAuth: false, title: 'ショップ - Officing' });
 
             router.register('/profile', async () => {
                 console.log('Profile route');
-                document.getElementById('app').innerHTML = '<div class="test-container"><h1>👤 プロフィールページ</h1><p>ルーティングが正常に動作しています！</p><a href="/" data-link class="btn btn-primary">ホームに戻る</a></div>';
+                document.getElementById('app').innerHTML = '<div class="test-container"><h1>👤 プロフィールページ</h1><p>ルーティングが正常に動作しています！</p><a href="./" data-link class="btn btn-primary">ホームに戻る</a></div>';
                 updateRouteInfo();
             }, { requireAuth: false, title: 'プロフィール - Officing' });
 
