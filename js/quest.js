@@ -60,7 +60,7 @@ class QuestManager {
               
               <!-- ナビゲーション -->
               <div class="quest-actions">
-                <button onclick="window.location.href='/'" class="btn btn-secondary btn-full">
+                <button onclick="if(typeof dashboardManager !== 'undefined') { dashboardManager.isLoading = false; dashboardManager.showDashboard(); }" class="btn btn-secondary btn-full">
                   ダッシュボードへ戻る
                 </button>
               </div>
@@ -68,6 +68,11 @@ class QuestManager {
           </div>
         </div>
       `;
+      
+      // ナビゲーションバーをマウント
+      if (typeof navigationManager !== 'undefined') {
+        navigationManager.mount('/quests', userData.total_points);
+      }
     } catch (error) {
       console.error('Failed to show quest screen:', error);
       this.showError('クエスト画面の表示に失敗しました');

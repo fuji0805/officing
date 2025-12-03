@@ -118,12 +118,52 @@ class NavigationManager {
       existingNav.remove();
     }
 
+    // ポイントが指定されていない場合、現在のポイントを取得
+    if (points === null) {
+      this.fetchAndMountWithPoints(currentPath);
+      return;
+    }
+
     // 新しいナビゲーションを追加
     const navHtml = this.render(currentPath, points);
     document.body.insertAdjacentHTML('afterbegin', navHtml);
 
     // イベントリスナーを設定
     this.setupEventListeners();
+  }
+
+  /**
+   * ポイントを取得してナビゲーションをマウント
+   */
+  async fetchAndMountWithPoints(currentPath) {
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        // ポイントなしでマウント
+        const navHtml = this.render(currentPath, null);
+        document.body.insertAdjacentHTML('afterbegin', navHtml);
+        this.setupEventListeners();
+        return;
+      }
+
+      const client = getSupabaseClient();
+      const { data } = await client
+        .from('user_progress')
+        .select('total_points')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      const points = data?.total_points || 0;
+      const navHtml = this.render(currentPath, points);
+      document.body.insertAdjacentHTML('afterbegin', navHtml);
+      this.setupEventListeners();
+    } catch (error) {
+      console.error('Failed to fetch points:', error);
+      // エラー時もナビゲーションは表示
+      const navHtml = this.render(currentPath, null);
+      document.body.insertAdjacentHTML('afterbegin', navHtml);
+      this.setupEventListeners();
+    }
   }
 
   /**
