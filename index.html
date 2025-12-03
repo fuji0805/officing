@@ -86,7 +86,10 @@
                     if (!user) {
                         // QRコードパラメータを保持してログイン画面にリダイレクト
                         const fullUrl = window.location.href;
-                        window.location.href = './login.html?returnUrl=' + encodeURIComponent(fullUrl);
+                        // 現在のディレクトリを保持してlogin.htmlにリダイレクト
+                        const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                        const loginUrl = window.location.origin + currentDir + 'login.html?returnUrl=' + encodeURIComponent(fullUrl);
+                        window.location.href = loginUrl;
                         return;
                     }
                     
