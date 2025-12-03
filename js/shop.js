@@ -151,7 +151,7 @@ class ShopManager {
             
             <!-- Actions -->
             <div class="shop-actions">
-              <button onclick="window.location.href='/'" class="btn btn-secondary btn-full">
+              <button onclick="goToDashboard()" class="btn btn-secondary btn-full">
                 ダッシュボードへ戻る
               </button>
             </div>
@@ -159,6 +159,9 @@ class ShopManager {
         </div>
       </div>
     `;
+    
+    // ナビゲーションバーをマウント
+    await mountNavigation('/shop');
   }
 
   /**

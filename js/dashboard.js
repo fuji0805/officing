@@ -80,10 +80,8 @@ class DashboardManager {
         monthlyCount
       });
 
-      // ナビゲーションバーにポイントを表示
-      if (typeof navigationManager !== 'undefined') {
-        navigationManager.mount('/', progress.total_points);
-      }
+      // ダッシュボードは独自のナビゲーションボタンを持つため、
+      // 上部のナビゲーションバーはマウントしない
 
     } catch (error) {
       console.error('Dashboard error:', error);
@@ -121,6 +119,9 @@ class DashboardManager {
             
             <!-- 今日のクエスト -->
             ${this.renderTodayQuests(todayQuests)}
+            
+            <!-- ナビゲーションボタン -->
+            ${this.renderNavigation()}
           </div>
         </div>
       </div>

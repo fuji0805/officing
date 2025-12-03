@@ -347,9 +347,6 @@ class TitleManager {
     const appDiv = document.getElementById('app');
     if (!appDiv) return;
 
-    // URLを更新
-    history.pushState({ page: 'titles' }, 'Titles', '/titles');
-
     try {
       // Get all titles with status
       const titles = await this.getAllTitlesWithStatus();
@@ -420,6 +417,9 @@ class TitleManager {
 
       // Add event listeners for title selection
       this.setupTitleEventListeners();
+      
+      // ナビゲーションバーをマウント
+      await mountNavigation('/titles');
     } catch (error) {
       console.error('Failed to show title collection:', error);
       this.showError('称号コレクションの表示に失敗しました: ' + error.message);

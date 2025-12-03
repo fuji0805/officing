@@ -20,13 +20,10 @@ class StampManager {
     const appDiv = document.getElementById('app');
     if (!appDiv) return;
 
-    // URLを更新
-    history.pushState({ page: 'stamps' }, 'Stamps', '/stamps');
-
     // 認証チェック
     const user = await getCurrentUser();
     if (!user) {
-      authManager.showAuthScreen({ returnUrl: '/stamps' });
+      authManager.showAuthScreen({ returnUrl: window.location.href });
       return;
     }
 
@@ -73,7 +70,7 @@ class StampManager {
             </div>
             
             <div class="stamp-collection-actions">
-              <button onclick="stampManager.goToDashboard()" class="btn btn-secondary btn-full">
+              <button onclick="goToDashboard()" class="btn btn-secondary btn-full">
                 ダッシュボードへ戻る
               </button>
             </div>
@@ -81,6 +78,9 @@ class StampManager {
         </div>
       </div>
     `;
+    
+    // ナビゲーションバーをマウント
+    await mountNavigation('/stamps');
   }
 
   /**
