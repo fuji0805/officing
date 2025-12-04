@@ -1471,6 +1471,7 @@ textarea:focus-visible {
   justify-content: center;
   background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
   padding: var(--spacing-lg);
+  padding-top: calc(64px + var(--spacing-lg)); /* ナビゲーションバーの高さ + 余白 */
 }
 
 .lottery-container {
@@ -1812,6 +1813,7 @@ textarea:focus-visible {
   justify-content: center;
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   padding: var(--spacing-lg);
+  padding-top: calc(64px + var(--spacing-lg)); /* ナビゲーションバーの高さ + 余白 */
 }
 
 .quest-container {
@@ -2385,6 +2387,7 @@ textarea:focus-visible {
   justify-content: center;
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   padding: var(--spacing-lg);
+  padding-top: calc(64px + var(--spacing-lg)); /* ナビゲーションバーの高さ + 余白 */
 }
 
 .title-collection-container {
@@ -2662,6 +2665,7 @@ textarea:focus-visible {
   justify-content: center;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   padding: var(--spacing-lg);
+  padding-top: calc(64px + var(--spacing-lg)); /* ナビゲーションバーの高さ + 余白 */
 }
 
 .shop-container {
@@ -5178,7 +5182,8 @@ img {
 .dashboard-screen {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding: 0 var(--spacing-md) var(--spacing-xl) var(--spacing-md);
+  padding-top: calc(64px + var(--spacing-md)); /* ナビゲーションバーの高さ + 余白 */
 }
 
 .dashboard-container {
@@ -5573,5 +5578,431 @@ img {
 
   .quick-stats {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   Stamp Collection Screen
+   ======================================== */
+
+.stamp-collection-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+  padding: var(--spacing-lg);
+  padding-top: calc(64px + var(--spacing-lg)); /* ナビゲーションバーの高さ + 余白 */
+}
+
+.stamp-collection-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.stamp-collection-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  color: white;
+}
+
+.stamp-collection-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  animation: slideDown 0.5s ease-out;
+}
+
+.stamp-collection-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.5s ease-out;
+}
+
+/* Month Navigation */
+.stamp-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-md);
+}
+
+.btn-month-nav {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-month-nav:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.stamp-current-month {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  flex: 1;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xl);
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--spacing-sm);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+  position: relative;
+  min-height: 60px;
+}
+
+.calendar-day-empty {
+  background-color: transparent;
+  border: none;
+}
+
+.calendar-day-number {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.calendar-stamp-icon {
+  font-size: var(--font-size-xl);
+  position: absolute;
+  bottom: var(--spacing-xs);
+}
+
+.calendar-day-stamped {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-color: #F59E0B;
+  cursor: pointer;
+}
+
+.calendar-day-stamped:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+  border-color: #D97706;
+}
+
+.calendar-day-today {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.calendar-day-today.calendar-day-stamped {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+/* Stamp Detail Modal */
+.stamp-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.stamp-detail-content {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.3s ease-out;
+}
+
+.stamp-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+}
+
+.stamp-detail-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stamp-detail-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.stamp-detail-close:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.stamp-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.stamp-detail-stamp {
+  text-align: center;
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-radius: var(--radius-lg);
+}
+
+.stamp-detail-icon {
+  font-size: 5rem;
+  margin-bottom: var(--spacing-md);
+  animation: bounce 1s ease-in-out 3;
+}
+
+.stamp-detail-date {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.stamp-detail-time {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+}
+
+.stamp-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.stamp-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.stamp-detail-label {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.stamp-detail-value {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Empty State */
+.stamp-empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--text-secondary);
+}
+
+.stamp-empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.stamp-empty-text {
+  font-size: var(--font-size-lg);
+}
+
+/* Stamp Collection Actions */
+.stamp-collection-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stamp-collection-screen {
+    padding: var(--spacing-md);
+    padding-top: calc(64px + var(--spacing-md));
+  }
+  
+  .stamp-collection-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .stamp-collection-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .stamp-month-nav {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .btn-month-nav {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  .stamp-current-month {
+    font-size: var(--font-size-lg);
+  }
+  
+  .calendar-grid {
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    min-height: 50px;
+    padding: 2px;
+  }
+  
+  .calendar-day-number {
+    font-size: var(--font-size-sm);
+    margin-bottom: 2px;
+  }
+  
+  .calendar-stamp-icon {
+    font-size: var(--font-size-base);
+    bottom: 2px;
+  }
+  
+  .calendar-weekday {
+    font-size: 0.75rem;
+    padding: var(--spacing-xs);
+  }
+  
+  .stamp-detail-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .stamp-detail-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .stamp-detail-icon {
+    font-size: 4rem;
+  }
+  
+  .stamp-detail-date {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .stamp-collection-screen {
+    padding: var(--spacing-sm);
+    padding-top: calc(64px + var(--spacing-sm));
+  }
+  
+  .stamp-collection-card {
+    padding: var(--spacing-md);
+  }
+  
+  .stamp-month-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .stamp-current-month {
+    width: 100%;
+    order: -1;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .calendar-grid {
+    gap: 1px;
+  }
+  
+  .calendar-day {
+    min-height: 40px;
+    padding: 1px;
+    border-radius: var(--radius-sm);
+  }
+  
+  .calendar-day-number {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+  }
+  
+  .calendar-stamp-icon {
+    font-size: var(--font-size-sm);
+    bottom: 1px;
+  }
+  
+  .calendar-weekday {
+    font-size: 0.625rem;
+    padding: 2px;
+  }
+  
+  .stamp-detail-modal {
+    padding: var(--spacing-sm);
+  }
+  
+  .stamp-detail-content {
+    padding: var(--spacing-md);
+  }
+  
+  .stamp-detail-stamp {
+    padding: var(--spacing-lg);
+  }
+  
+  .stamp-detail-icon {
+    font-size: 3rem;
   }
 }

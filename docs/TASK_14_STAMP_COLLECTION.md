@@ -8,14 +8,17 @@
 
 ### 1. スタンプ帳画面のUI作成（カレンダービュー）
 
-**ファイル**: `js/stamp.js`, `css/main.css`, `stamps.html`
+**ファイル**: `js/stamp.js`, `css/main.css`
 
 - カレンダーグリッドレイアウト（7列 × 週数）
 - 曜日ヘッダー表示
-- 日付セルの表示
-- スタンプがある日は🎫アイコンを表示
+- 日付セルの表示（`aspect-ratio: 1` で正方形を維持）
+- スタンプがある日は🎫アイコンを表示（絶対配置で下部に固定）
 - 今日の日付をハイライト表示
-- レスポンシブデザイン対応
+- **完全なレスポンシブデザイン対応**:
+  - デスクトップ: 通常サイズ
+  - タブレット (768px以下): ギャップ2px、フォントサイズ調整
+  - スマホ (480px以下): ギャップ1px、最小高さ40px、コンパクト表示
 
 **Requirements**: 12.1, 12.2, 12.4
 
@@ -183,30 +186,71 @@ async navigateMonth(direction) {
 
 ### カラースキーム
 
-- 背景グラデーション: `#EC4899` → `#DB2777` (ピンク系)
-- スタンプセル: `#FEF3C7` → `#FDE68A` (イエロー系)
-- 今日の日付: `#4F46E5` (プライマリカラー)
+- 背景グラデーション: `#EC4899` → `#BE185D` (ピンク系)
+- スタンプセル（通常）: `var(--bg-secondary)` (グレー)
+- スタンプセル（スタンプあり）: `#FEF3C7` → `#FDE68A` (イエロー系)
+- スタンプセル（今日）: `border-color: var(--primary-color)` (プライマリカラー)
+- スタンプセル（今日+スタンプあり）: `border-color: #F59E0B` (オレンジ)
+
+### カレンダーセルのレイアウト
+
+```css
+.calendar-day {
+  aspect-ratio: 1;              /* 正方形を維持 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  position: relative;           /* アイコンの絶対配置用 */
+  min-height: 60px;            /* 最小高さを保証 */
+}
+
+.calendar-stamp-icon {
+  position: absolute;           /* 絶対配置 */
+  bottom: var(--spacing-xs);   /* 下部に固定 */
+}
+```
 
 ### アニメーション
 
-- `stampPop`: スタンプアイコンの出現アニメーション
-- `bounce`: スタンプ詳細アイコンのバウンス
+- `bounce`: スタンプ詳細アイコンのバウンス（3回）
 - `scaleIn`: モーダルの拡大表示
 - `fadeIn`: モーダル背景のフェードイン
+- `slideDown`: 画面タイトルのスライドダウン
+- ホバー時: `transform: scale(1.05)` でセルを拡大
 
 ## レスポンシブデザイン
 
-### モバイル対応 (< 768px)
+### デスクトップ (> 768px)
 
-- 月間ナビゲーションを縦並びに変更
-- カレンダーグリッドの間隔を縮小
-- フォントサイズの調整
-- スタンプアイコンサイズの縮小
+- カレンダーグリッド: `gap: var(--spacing-xs)` (4px)
+- カレンダーセル: `min-height: 60px`
+- 日付番号: `font-size: var(--font-size-base)` (16px)
+- スタンプアイコン: `font-size: var(--font-size-xl)` (20px)
 
-### 小画面対応 (< 480px)
+### タブレット対応 (≤ 768px)
 
-- カレンダー日付番号をさらに縮小
-- スタンプ詳細を縦並びレイアウトに変更
+- カレンダーグリッド: `gap: 2px`
+- カレンダーセル: `min-height: 50px`, `padding: 2px`
+- 日付番号: `font-size: var(--font-size-sm)` (14px)
+- スタンプアイコン: `font-size: var(--font-size-base)` (16px)
+- 曜日ヘッダー: `font-size: 0.75rem` (12px)
+
+### スマホ対応 (≤ 480px)
+
+- カレンダーグリッド: `gap: 1px`（最小限）
+- カレンダーセル: `min-height: 40px`, `padding: 1px`
+- 日付番号: `font-size: 0.75rem` (12px)
+- スタンプアイコン: `font-size: var(--font-size-sm)` (14px)
+- 曜日ヘッダー: `font-size: 0.625rem` (10px)
+- 月間ナビゲーション: 縦並びレイアウト（月表示を上部に配置）
+
+### スタンプが入った場合の対応
+
+- **正方形の維持**: `aspect-ratio: 1` でセルの形状を保持
+- **アイコンの配置**: 絶対配置（`position: absolute`, `bottom`）で日付番号と重ならないように配置
+- **レイアウト崩れ防止**: `min-height` と `padding` の調整でコンテンツが収まるように設計
 
 ## データフロー
 

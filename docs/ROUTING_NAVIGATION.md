@@ -6,18 +6,27 @@ Officingアプリケーションのクライアントサイドルーティング
 
 ## 実装内容
 
-### 1. クライアントサイドルーティング (`js/router.js`)
+### 1. 完全なSPAアーキテクチャ
 
-シンプルで効率的なクライアントサイドルーターを実装しました。
+アプリケーションは完全なSingle Page Application (SPA)として動作します：
+
+- **単一のHTMLファイル** (`index.html`) からすべての画面を表示
+- **ページリロードなし**: すべての画面遷移はJavaScriptで処理
+- **動的コンテンツ読み込み**: 各画面マネージャーが `#app` 要素にコンテンツを注入
+- **統一されたナビゲーション**: すべての画面で共通のナビゲーションバーを使用
+
+### 2. ナビゲーションシステム (`js/navigation.js`)
+
+レスポンシブなナビゲーションメニューコンポーネントを実装しました。
 
 #### 主な機能
 
-- **ルート登録**: `router.register(path, handler, options)`
-- **ナビゲーション**: `router.navigate(path)`
-- **認証ガード**: `requireAuth` オプションで保護されたルートを設定
-- **履歴管理**: ブラウザの戻る/進むボタンに対応
-- **ページ遷移アニメーション**: スムーズなフェードイン/アウト
-- **コールバック**: `beforeNavigate` と `afterNavigate` でカスタム処理
+- **レスポンシブデザイン**: デスクトップとモバイルで異なるレイアウト
+- **ハンバーガーメニュー**: モバイルでスライドインメニュー
+- **ポイント表示**: ユーザーの所持ポイントをリアルタイム表示
+- **ログアウト機能**: ナビゲーションからログアウト可能
+- **キーボード対応**: ESCキーでメニューを閉じる
+- **重複防止**: 既存のナビゲーションバーを自動削除してから新しいものをマウント
 
 #### 使用例
 
@@ -39,41 +48,84 @@ router.afterNavigate((path) => {
 });
 ```
 
-### 2. ナビゲーションメニュー (`js/navigation.js`)
+### 3. 画面マネージャーとの統合
 
-レスポンシブなナビゲーションメニューコンポーネントを実装しました。
+各画面マネージャー（dashboard, quest, lottery, shop, title, stamp）は、以下のパターンで動作します：
 
-#### 主な機能
+```javascript
+async showScreen() {
+  const appDiv = document.getElementById('app');
+  
+  // 画面コンテンツをレンダリング
+  appDiv.innerHTML = this.renderScreen();
+  
+  // ナビゲーションバーをマウント（ダッシュボード以外）
+  await mountNavigation('/path');
+}
+```
 
-- **レスポンシブデザイン**: デスクトップとモバイルで異なるレイアウト
-- **ハンバーガーメニュー**: モバイルでスライドインメニュー
-- **アクティブリンク**: 現在のページをハイライト
-- **ログアウト機能**: ナビゲーションからログアウト可能
-- **キーボード対応**: ESCキーでメニューを閉じる
+#### ダッシュボードの特別な扱い
+
+ダッシュボードは独自のナビゲーションボタンを持つため、上部のナビゲーションバーはマウントしません：
+
+```javascript
+// ダッシュボードは独自のナビゲーションボタンを持つため、
+// 上部のナビゲーションバーはマウントしない
+```
 
 #### 使用例
 
 ```javascript
-// ナビゲーションをマウント
-navigationManager.mount('/');
+// ナビゲーションをマウント（ポイント付き）
+await mountNavigation('/shop');
 
-// アクティブリンクを更新
-navigationManager.updateActiveLink('/profile');
+// ナビゲーションをマウント（ポイント自動取得）
+navigationManager.mount('/stamps');
 
 // メニューを開閉
 navigationManager.toggleMenu();
+
+// ポイント表示を更新
+navigationManager.updatePoints(1500);
 ```
 
-### 3. ページ遷移アニメーション
+### 4. ナビゲーションバーの重複防止
 
-スムーズなページ遷移を実現するアニメーションを実装しました。
+ナビゲーションバーが重複して表示される問題を防ぐため、以下の対策を実装：
 
-- **フェードアウト**: 現在のページが透明度0に
-- **フェードイン**: 新しいページが透明度1に
-- **スライド**: 軽微な上下移動でダイナミックな印象
-- **所要時間**: 150ms（高速でストレスフリー）
+```javascript
+mount(currentPath = '/', points = null) {
+  // 既存のナビゲーションをすべて削除
+  const existingNavs = document.querySelectorAll('.main-nav');
+  existingNavs.forEach(nav => nav.remove());
+  
+  // 新しいナビゲーションを追加
+  const navHtml = this.render(currentPath, points);
+  document.body.insertAdjacentHTML('afterbegin', navHtml);
+  
+  this.setupEventListeners();
+}
+```
 
-### 4. ブラウザの戻る/進むボタン対応
+### 5. 画面上部の空白問題の修正
+
+ナビゲーションバー（高さ64px）が `position: sticky` で固定されているため、各画面の上部パディングを調整：
+
+```css
+.dashboard-screen {
+  padding-top: calc(64px + var(--spacing-md)); /* ナビゲーションバーの高さ + 余白 */
+}
+
+.quest-screen,
+.lottery-screen,
+.shop-screen,
+.title-collection-screen,
+.stamp-collection-screen {
+  padding-top: calc(64px + var(--spacing-lg));
+}
+```
+
+### 6. ブラウザの戻る/進むボタン対応
 
 `popstate` イベントを監視し、ブラウザの履歴ナビゲーションに完全対応しています。
 
@@ -93,24 +145,36 @@ css/
 
 ### ナビゲーション
 
-- `.main-nav`: メインナビゲーションバー
+- `.main-nav`: メインナビゲーションバー（`position: sticky`, `top: 0`, `height: 64px`）
 - `.nav-container`: ナビゲーションコンテナ
 - `.nav-brand`: ブランドロゴエリア
+- `.nav-logo`: ロゴリンク
+- `.nav-points`: ポイント表示エリア
 - `.nav-menu`: メニューコンテナ
+- `.nav-links`: ナビゲーションリンクのコンテナ
 - `.nav-link`: ナビゲーションリンク
 - `.nav-link-active`: アクティブなリンク
 - `.nav-toggle`: モバイルメニュートグルボタン
 - `.nav-overlay`: モバイルメニューオーバーレイ
+- `.nav-logout-btn`: ログアウトボタン
 
-### ページレイアウト
+### 画面レイアウト
 
-- `.page-with-nav`: ナビゲーションがある場合のページコンテンツ（上部パディング60px）
+各画面は上部パディングでナビゲーションバーの高さを考慮：
+
+- `.dashboard-screen`: `padding-top: calc(64px + var(--spacing-md))`
+- `.quest-screen`: `padding-top: calc(64px + var(--spacing-lg))`
+- `.lottery-screen`: `padding-top: calc(64px + var(--spacing-lg))`
+- `.shop-screen`: `padding-top: calc(64px + var(--spacing-lg))`
+- `.title-collection-screen`: `padding-top: calc(64px + var(--spacing-lg))`
+- `.stamp-collection-screen`: `padding-top: calc(64px + var(--spacing-lg))`
 
 ### アニメーション
 
-- `#app`: ページ遷移アニメーションが適用される要素
-- `.page-transition-enter`: 入場アニメーション
-- `.page-transition-exit`: 退場アニメーション
+- `#app`: 画面コンテンツが表示される要素
+- `.fade-in`: フェードインアニメーション
+- `.slide-down`: スライドダウンアニメーション
+- `.scale-in`: スケールインアニメーション
 
 ## レスポンシブデザイン
 
