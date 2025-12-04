@@ -161,7 +161,7 @@ class ShopManager {
     `;
     
     // ナビゲーションバーをマウント
-    await mountNavigation('/shop');
+    mountNavigation('/shop');
   }
 
   /**

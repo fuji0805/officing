@@ -336,9 +336,6 @@ class DashboardManager {
         <a href="#" onclick="event.preventDefault(); stampManager.showStampCollectionScreen();" class="nav-btn">
           📅 スタンプ帳
         </a>
-        <a href="#" onclick="event.preventDefault(); dashboardManager.isLoading = false; dashboardManager.showDashboard();" class="nav-btn">
-          🏠 ホーム
-        </a>
       </div>
     `;
   }

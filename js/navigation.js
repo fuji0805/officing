@@ -112,11 +112,9 @@ class NavigationManager {
    * @param {number} points - 所持ポイント（オプション）
    */
   mount(currentPath = '/', points = null) {
-    // 既存のナビゲーションを削除
-    const existingNav = document.querySelector('.main-nav');
-    if (existingNav) {
-      existingNav.remove();
-    }
+    // 既存のナビゲーションをすべて削除
+    const existingNavs = document.querySelectorAll('.main-nav');
+    existingNavs.forEach(nav => nav.remove());
 
     // ポイントが指定されていない場合、現在のポイントを取得
     if (points === null) {
@@ -136,6 +134,10 @@ class NavigationManager {
    * ポイントを取得してナビゲーションをマウント
    */
   async fetchAndMountWithPoints(currentPath) {
+    // 既存のナビゲーションをすべて削除
+    const existingNavs = document.querySelectorAll('.main-nav');
+    existingNavs.forEach(nav => nav.remove());
+
     try {
       const user = await getCurrentUser();
       if (!user) {
