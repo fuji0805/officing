@@ -108,6 +108,11 @@ class LotteryManager {
         </div>
       `;
       
+      // 背景色を設定
+      if (typeof setScreenBackground !== 'undefined') {
+        setScreenBackground('linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)');
+      }
+      
       // ナビゲーションバーをマウント
       if (typeof navigationManager !== 'undefined') {
         navigationManager.mount('/lottery', userData.total_points);

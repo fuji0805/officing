@@ -40,3 +40,11 @@ async function mountNavigation(path = '/') {
     }
   }
 }
+
+/**
+ * 画面の背景色を設定
+ */
+function setScreenBackground(gradient) {
+  document.body.style.background = gradient;
+  document.body.style.minHeight = '100vh';
+}

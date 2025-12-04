@@ -79,6 +79,11 @@ class StampManager {
       </div>
     `;
     
+    // 背景色を設定
+    if (typeof setScreenBackground !== 'undefined') {
+      setScreenBackground('linear-gradient(135deg, #EC4899 0%, #BE185D 100%)');
+    }
+    
     // ナビゲーションバーをマウント
     await mountNavigation('/stamps');
   }

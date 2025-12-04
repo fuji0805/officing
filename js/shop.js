@@ -160,6 +160,11 @@ class ShopManager {
       </div>
     `;
     
+    // 背景色を設定
+    if (typeof setScreenBackground !== 'undefined') {
+      setScreenBackground('linear-gradient(135deg, #10B981 0%, #059669 100%)');
+    }
+    
     // ナビゲーションバーをマウント
     mountNavigation('/shop');
   }

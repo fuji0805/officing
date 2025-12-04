@@ -69,6 +69,11 @@ class QuestManager {
         </div>
       `;
       
+      // 背景色を設定
+      if (typeof setScreenBackground !== 'undefined') {
+        setScreenBackground('linear-gradient(135deg, #F59E0B 0%, #D97706 100%)');
+      }
+      
       // ナビゲーションバーをマウント
       if (typeof navigationManager !== 'undefined') {
         navigationManager.mount('/quests', userData.total_points);

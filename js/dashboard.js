@@ -80,6 +80,11 @@ class DashboardManager {
         monthlyCount
       });
 
+      // 背景色を設定
+      if (typeof setScreenBackground !== 'undefined') {
+        setScreenBackground('linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+      }
+
       // ダッシュボードは独自のナビゲーションボタンを持つため、
       // 上部のナビゲーションバーはマウントしない
 

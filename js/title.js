@@ -418,6 +418,11 @@ class TitleManager {
       // Add event listeners for title selection
       this.setupTitleEventListeners();
       
+      // 背景色を設定
+      if (typeof setScreenBackground !== 'undefined') {
+        setScreenBackground('linear-gradient(135deg, #F59E0B 0%, #D97706 100%)');
+      }
+      
       // ナビゲーションバーをマウント
       await mountNavigation('/titles');
     } catch (error) {
