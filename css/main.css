@@ -6006,3 +6006,220 @@ img {
     font-size: 3rem;
   }
 }
+
+/* ========================================
+   Dashboard Stamp Calendar
+   ======================================== */
+
+.dashboard-stamp-calendar-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.dashboard-stamp-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.dashboard-stamp-calendar-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dashboard-stamp-calendar-link {
+  font-size: var(--font-size-base);
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.dashboard-stamp-calendar-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* チェックインメッセージ */
+.dashboard-checkin-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  border-left: 4px solid var(--warning-color);
+}
+
+.checkin-message-icon {
+  font-size: var(--font-size-2xl);
+  flex-shrink: 0;
+}
+
+.checkin-message-text {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* カレンダーグリッド */
+.dashboard-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-calendar-weekday {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--spacing-xs);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.dashboard-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+  position: relative;
+  min-height: 50px;
+}
+
+.dashboard-calendar-day-empty {
+  background-color: transparent;
+  border: none;
+}
+
+.dashboard-calendar-day-number {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.dashboard-calendar-stamp-icon {
+  font-size: var(--font-size-lg);
+  position: absolute;
+  bottom: 2px;
+}
+
+.dashboard-calendar-day-stamped {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-color: #F59E0B;
+}
+
+.dashboard-calendar-day-today {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.dashboard-calendar-day-today.dashboard-calendar-day-stamped {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+/* カレンダー統計 */
+.dashboard-stamp-calendar-stats {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.stamp-stat {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .dashboard-stamp-calendar-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .dashboard-stamp-calendar-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .dashboard-calendar-grid {
+    gap: 2px;
+  }
+  
+  .dashboard-calendar-day {
+    min-height: 40px;
+    padding: 2px;
+  }
+  
+  .dashboard-calendar-day-number {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+  }
+  
+  .dashboard-calendar-stamp-icon {
+    font-size: var(--font-size-base);
+    bottom: 1px;
+  }
+  
+  .dashboard-calendar-weekday {
+    font-size: 0.75rem;
+    padding: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-stamp-calendar-card {
+    padding: var(--spacing-md);
+  }
+  
+  .dashboard-stamp-calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dashboard-calendar-grid {
+    gap: 1px;
+  }
+  
+  .dashboard-calendar-day {
+    min-height: 35px;
+    padding: 1px;
+  }
+  
+  .dashboard-calendar-day-number {
+    font-size: 0.625rem;
+  }
+  
+  .dashboard-calendar-stamp-icon {
+    font-size: var(--font-size-sm);
+    bottom: 0;
+  }
+  
+  .dashboard-calendar-weekday {
+    font-size: 0.625rem;
+    padding: 1px;
+  }
+  
+  .checkin-message-text {
+    font-size: var(--font-size-sm);
+  }
+}

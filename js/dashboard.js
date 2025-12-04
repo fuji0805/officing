@@ -48,20 +48,26 @@ class DashboardManager {
       }
 
       // 必要なデータを並行取得
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+      
       const [
         progress,
         todayCheckin,
         ticketCount,
         activeTitle,
         todayQuests,
-        monthlyCount
+        monthlyCount,
+        monthlyStamps
       ] = await Promise.all([
         this.getUserProgress(user.id),
         this.getTodayCheckinStatus(user.id),
         this.getTicketCount(user.id),
         this.getActiveTitle(user.id),
         this.getTodayQuests(user.id),
-        this.getMonthlyCheckinCount(user.id)
+        this.getMonthlyCheckinCount(user.id),
+        this.getMonthlyStamps(user.id, currentYear, currentMonth)
       ]);
 
       // XP計算
@@ -77,7 +83,10 @@ class DashboardManager {
         todayQuests,
         xpForNextLevel,
         progressPercent,
-        monthlyCount
+        monthlyCount,
+        monthlyStamps,
+        currentYear,
+        currentMonth
       });
 
       // 背景色を設定
@@ -101,7 +110,7 @@ class DashboardManager {
    * Requirements: 13.1, 13.2, 13.3, 13.4, 13.5
    */
   renderDashboard(data) {
-    const { progress, todayCheckin, ticketCount, activeTitle, todayQuests, xpForNextLevel, progressPercent, monthlyCount } = data;
+    const { progress, todayCheckin, ticketCount, activeTitle, todayQuests, xpForNextLevel, progressPercent, monthlyCount, monthlyStamps, currentYear, currentMonth } = data;
 
     return `
       <div class="dashboard-screen">
@@ -111,8 +120,8 @@ class DashboardManager {
             <p class="dashboard-subtitle">おかえりなさい！</p>
           </div>
           
-          <!-- 今日のチェックイン状況 -->
-          ${this.renderCheckinStatus(todayCheckin)}
+          <!-- 今月のスタンプ帳カレンダー -->
+          ${this.renderStampCalendar(monthlyStamps, todayCheckin, currentYear, currentMonth)}
           
           <!-- ユーザー情報カード -->
           <div class="dashboard-card">
@@ -134,38 +143,84 @@ class DashboardManager {
   }
 
   /**
-   * 今日のチェックイン状況を表示
+   * 今月のスタンプ帳カレンダーを表示
    * Requirements: 13.1
    */
-  renderCheckinStatus(todayCheckin) {
-    if (todayCheckin) {
-      // チェックイン済み
-      const time = this.formatTime(new Date(todayCheckin.check_in_time));
-      return `
-        <div class="dashboard-checkin-status checkin-done">
-          <div class="checkin-status-icon">✅</div>
-          <div class="checkin-status-content">
-            <div class="checkin-status-title">本日チェックイン済み</div>
-            <div class="checkin-status-detail">
-              ${time} に ${todayCheckin.tag} でチェックイン
-            </div>
-          </div>
-        </div>
-      `;
-    } else {
-      // 未チェックイン
-      return `
-        <div class="dashboard-checkin-status checkin-pending">
-          <div class="checkin-status-icon">📱</div>
-          <div class="checkin-status-content">
-            <div class="checkin-status-title">今日はまだチェックインしていません</div>
-            <div class="checkin-status-detail">
-              QRコードをスキャンしてチェックインしましょう！
-            </div>
-          </div>
+  renderStampCalendar(stamps, todayCheckin, year, month) {
+    const firstDay = new Date(year, month - 1, 1);
+    const lastDay = new Date(year, month, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
+    const today = new Date().getDate();
+    const isCurrentMonth = new Date().getFullYear() === year && new Date().getMonth() + 1 === month;
+
+    // スタンプデータをマップに変換（日付をキーに）
+    const stampMap = new Map();
+    stamps.forEach(stamp => {
+      const date = new Date(stamp.check_in_date);
+      const day = date.getDate();
+      stampMap.set(day, stamp);
+    });
+
+    let calendarHtml = '<div class="dashboard-calendar-grid">';
+    
+    // 曜日ヘッダー
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    weekdays.forEach(day => {
+      calendarHtml += `<div class="dashboard-calendar-weekday">${day}</div>`;
+    });
+
+    // 空白セル（月の最初の日まで）
+    for (let i = 0; i < startDayOfWeek; i++) {
+      calendarHtml += '<div class="dashboard-calendar-day dashboard-calendar-day-empty"></div>';
+    }
+
+    // 日付セル
+    for (let day = 1; day <= daysInMonth; day++) {
+      const stamp = stampMap.get(day);
+      const hasStamp = !!stamp;
+      const isToday = isCurrentMonth && day === today;
+      
+      let dayClass = 'dashboard-calendar-day';
+      if (hasStamp) dayClass += ' dashboard-calendar-day-stamped';
+      if (isToday) dayClass += ' dashboard-calendar-day-today';
+      
+      calendarHtml += `
+        <div class="${dayClass}">
+          <div class="dashboard-calendar-day-number">${day}</div>
+          ${hasStamp ? '<div class="dashboard-calendar-stamp-icon">🎫</div>' : ''}
         </div>
       `;
     }
+
+    calendarHtml += '</div>';
+
+    // チェックイン状況メッセージ
+    let statusMessage = '';
+    if (!todayCheckin) {
+      statusMessage = `
+        <div class="dashboard-checkin-message">
+          <span class="checkin-message-icon">📱</span>
+          <span class="checkin-message-text">今日はまだチェックインしていません</span>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="dashboard-stamp-calendar-card">
+        <div class="dashboard-stamp-calendar-header">
+          <h2 class="dashboard-stamp-calendar-title">📅 ${year}年${month}月のスタンプ帳</h2>
+          <a href="#" onclick="event.preventDefault(); if(typeof stampManager !== 'undefined') stampManager.showStampCollectionScreen();" class="dashboard-stamp-calendar-link">
+            詳細を見る →
+          </a>
+        </div>
+        ${statusMessage}
+        ${calendarHtml}
+        <div class="dashboard-stamp-calendar-stats">
+          <span class="stamp-stat">今月の出社: ${stamps.length}日</span>
+        </div>
+      </div>
+    `;
   }
 
   /**
@@ -528,6 +583,26 @@ class DashboardManager {
 
     if (error) throw error;
     return count || 0;
+  }
+
+  /**
+   * 月間スタンプデータを取得
+   * Requirements: 13.1
+   */
+  async getMonthlyStamps(userId, year, month) {
+    const client = getSupabaseClient();
+    if (!client) throw new Error('Supabase client not initialized');
+
+    const { data, error } = await client
+      .from('attendances')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('year', year)
+      .eq('month', month)
+      .order('check_in_date', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
   }
 
   /**
