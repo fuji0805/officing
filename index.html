@@ -119,6 +119,29 @@
                                 
                                 // ダッシュボードを表示
                                 await dashboardManager.showDashboard();
+                                
+                                // チェックイン成功時に報酬を表示
+                                if (result && result.success) {
+                                    let rewardMessage = '🎉 チェックイン成功！\n\n';
+                                    rewardMessage += `🎫 チケット: ${result.ticketsEarned}枚\n`;
+                                    rewardMessage += `⭐ 経験値: +${result.xpEarned} XP\n`;
+                                    rewardMessage += `💎 ポイント: +${result.pointsEarned}\n`;
+                                    
+                                    if (result.levelUp) {
+                                        rewardMessage += `\n🎊 レベルアップ！ Lv.${result.newLevel}\n`;
+                                    }
+                                    
+                                    if (result.newTitles && result.newTitles.length > 0) {
+                                        rewardMessage += `\n👑 新しい称号を獲得しました！\n`;
+                                        result.newTitles.forEach(title => {
+                                            rewardMessage += `  - ${title.name}\n`;
+                                        });
+                                    }
+                                    
+                                    setTimeout(() => {
+                                        alert(rewardMessage);
+                                    }, 500);
+                                }
                             } catch (error) {
                                 console.error('Checkin error:', error);
                                 // エラーでもダッシュボードを表示

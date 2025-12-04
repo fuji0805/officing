@@ -115,6 +115,10 @@ class CheckinManager {
               isNewRecord: data.rewards.streak.isNewRecord
             },
             ticketsEarned: data.rewards.ticketsEarned,
+            xpEarned: data.rewards.xpEarned,
+            pointsEarned: data.rewards.pointsEarned,
+            levelUp: data.rewards.levelUp,
+            newLevel: data.rewards.newLevel,
             newTitles: data.newTitles || [],
             tag: finalTag
           };

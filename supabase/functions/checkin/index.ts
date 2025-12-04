@@ -24,6 +24,10 @@ interface CheckinResponse {
   attendance?: any
   rewards?: {
     ticketsEarned: number
+    xpEarned: number
+    pointsEarned: number
+    levelUp: boolean
+    newLevel?: number
     monthlyCount: number
     streak: {
       current: number
@@ -153,8 +157,11 @@ serve(async (req) => {
     // Calculate and update streak
     const streakResult = await updateStreak(supabaseClient, user.id, checkInDate)
 
+    // Grant base rewards (XP, points, ticket)
+    const baseRewards = await grantBaseRewards(supabaseClient, user.id)
+
     // Check for lottery ticket rewards (4, 8, 12 check-ins)
-    const ticketsEarned = await checkAndGrantTickets(
+    const bonusTickets = await checkAndGrantBonusTickets(
       supabaseClient,
       user.id,
       monthlyCount
@@ -173,7 +180,11 @@ serve(async (req) => {
       success: true,
       attendance,
       rewards: {
-        ticketsEarned,
+        ticketsEarned: 1 + bonusTickets, // 基本1枚 + ボーナス
+        xpEarned: baseRewards.xp,
+        pointsEarned: baseRewards.points,
+        levelUp: baseRewards.levelUp,
+        newLevel: baseRewards.newLevel,
         monthlyCount,
         streak: streakResult,
       },
@@ -293,10 +304,102 @@ async function updateStreak(
 }
 
 /**
- * Check and grant lottery tickets based on monthly count
+ * Grant base rewards for check-in (XP, points, ticket)
+ */
+async function grantBaseRewards(
+  supabaseClient: any,
+  userId: string
+): Promise<{ xp: number; points: number; levelUp: boolean; newLevel?: number }> {
+  const BASE_XP = 50 // チェックインで獲得する経験値
+  const BASE_POINTS = 10 // チェックインで獲得するポイント
+  const BASE_TICKETS = 1 // チェックインで獲得するチケット
+
+  // Get current user progress
+  const { data: progress, error: progressError } = await supabaseClient
+    .from('user_progress')
+    .select('level, current_xp, total_points')
+    .eq('user_id', userId)
+    .single()
+
+  if (progressError && progressError.code !== 'PGRST116') {
+    throw progressError
+  }
+
+  const currentLevel = progress?.level || 1
+  const currentXP = progress?.current_xp || 0
+  const currentPoints = progress?.total_points || 0
+
+  // Calculate new XP and check for level up
+  const newXP = currentXP + BASE_XP
+  const xpForNextLevel = Math.floor(100 * Math.pow(currentLevel, 1.5))
+  
+  let levelUp = false
+  let newLevel = currentLevel
+  let finalXP = newXP
+
+  if (newXP >= xpForNextLevel) {
+    levelUp = true
+    newLevel = currentLevel + 1
+    finalXP = newXP - xpForNextLevel // 余剰XPを次のレベルに繰り越し
+  }
+
+  // Update user progress
+  const { error: updateError } = await supabaseClient
+    .from('user_progress')
+    .update({
+      level: newLevel,
+      current_xp: finalXP,
+      total_points: currentPoints + BASE_POINTS,
+    })
+    .eq('user_id', userId)
+
+  if (updateError) {
+    throw updateError
+  }
+
+  // Grant lottery ticket
+  const { data: existingTickets, error: fetchError } = await supabaseClient
+    .from('lottery_tickets')
+    .select('ticket_count')
+    .eq('user_id', userId)
+    .single()
+
+  if (fetchError && fetchError.code !== 'PGRST116') {
+    throw fetchError
+  }
+
+  if (!existingTickets) {
+    // Create new record
+    await supabaseClient
+      .from('lottery_tickets')
+      .insert({
+        user_id: userId,
+        ticket_count: BASE_TICKETS,
+        earned_from: 'checkin',
+      })
+  } else {
+    // Update existing record
+    await supabaseClient
+      .from('lottery_tickets')
+      .update({
+        ticket_count: existingTickets.ticket_count + BASE_TICKETS,
+      })
+      .eq('user_id', userId)
+  }
+
+  return {
+    xp: BASE_XP,
+    points: BASE_POINTS,
+    levelUp,
+    newLevel: levelUp ? newLevel : undefined,
+  }
+}
+
+/**
+ * Check and grant bonus lottery tickets based on monthly count
  * Requirements: 3.1, 3.2, 3.3
  */
-async function checkAndGrantTickets(
+async function checkAndGrantBonusTickets(
   supabaseClient: any,
   userId: string,
   monthlyCount: number
