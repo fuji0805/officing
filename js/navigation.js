@@ -23,7 +23,7 @@ class NavigationManager {
       <nav class="main-nav">
         <div class="nav-container">
           <div class="nav-brand">
-            <a href="/" data-link class="nav-logo">
+            <a href="#" onclick="event.preventDefault(); if(typeof dashboardManager !== 'undefined') { dashboardManager.isLoading = false; dashboardManager.showDashboard(); }" class="nav-logo">
               <span class="nav-logo-icon">🏢</span>
               <span class="nav-logo-text">Officing</span>
             </a>
@@ -95,8 +95,8 @@ class NavigationManager {
     const isActive = this.currentPath === path;
     const activeClass = isActive ? 'nav-link-active' : '';
 
-    // ホームページへのリンクは相対パスを使用
-    const href = path === '/' ? './' : path;
+    // ホームページへのリンクはベースパスを使用
+    const href = path === '/' ? '/officing/' : path;
 
     return `
       <a href="${href}" data-link class="nav-link ${activeClass}">

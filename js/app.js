@@ -223,7 +223,7 @@ class OfficingApp {
             </div>
             
             <div class="checkin-actions">
-              <button onclick="window.location.href='/'" class="btn btn-primary btn-full">
+              <button onclick="window.location.href='/officing/'" class="btn btn-primary btn-full">
                 ダッシュボードへ
               </button>
             </div>
@@ -360,7 +360,7 @@ class OfficingApp {
             <p>また明日お会いしましょう！</p>
             
             <div class="checkin-actions">
-              <button onclick="window.location.href='/'" class="btn btn-primary">
+              <button onclick="window.location.href='/officing/'" class="btn btn-primary">
                 ダッシュボードへ
               </button>
             </div>
@@ -392,7 +392,7 @@ class OfficingApp {
               <button onclick="window.location.reload()" class="btn btn-secondary">
                 再試行
               </button>
-              <button onclick="window.location.href='/'" class="btn btn-primary">
+              <button onclick="window.location.href='/officing/'" class="btn btn-primary">
                 ダッシュボードへ
               </button>
             </div>

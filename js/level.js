@@ -330,7 +330,7 @@ class LevelManager {
                 <button onclick="window.location.href='/titles-demo.html'" class="btn btn-primary btn-full">
                   👑 称号コレクションを見る
                 </button>
-                <button onclick="window.location.href='/'" class="btn btn-secondary btn-full">
+                <button onclick="window.location.href='/officing/'" class="btn btn-secondary btn-full">
                   ダッシュボードへ戻る
                 </button>
               </div>
@@ -378,7 +378,7 @@ class LevelManager {
       <div class="error-screen">
         <h1>エラー</h1>
         <p>${message}</p>
-        <button onclick="window.location.href='/'" class="btn btn-primary">
+        <button onclick="window.location.href='/officing/'" class="btn btn-primary">
           ダッシュボードへ戻る
         </button>
       </div>

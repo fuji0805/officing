@@ -423,7 +423,7 @@ class LotteryManager {
       <div class="error-screen">
         <h1>エラー</h1>
         <p>${message}</p>
-        <button onclick="window.location.href='/'" class="btn btn-primary">
+        <button onclick="window.location.href='/officing/'" class="btn btn-primary">
           ダッシュボードへ戻る
         </button>
       </div>
