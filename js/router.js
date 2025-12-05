@@ -149,11 +149,12 @@ class Router {
       // ページタイトルを更新
       document.title = route.title;
 
-      // 履歴に追加（ベースパスを含める）
-      if (pushState) {
-        const fullPath = normalizedPath === '/' ? '/officing/' : '/officing' + normalizedPath;
-        window.history.pushState({ path: normalizedPath }, route.title, fullPath);
-      }
+      // 履歴に追加しない（URLを固定）
+      // GitHub Pagesでは /officing/ のまま維持
+      // if (pushState) {
+      //   const fullPath = normalizedPath === '/' ? '/officing/' : '/officing' + normalizedPath;
+      //   window.history.pushState({ path: normalizedPath }, route.title, fullPath);
+      // }
 
       // 現在のルートを更新
       this.currentRoute = normalizedPath;

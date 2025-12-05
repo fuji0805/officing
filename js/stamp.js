@@ -322,8 +322,8 @@ class StampManager {
    * ダッシュボードへ戻る
    */
   goToDashboard() {
-    // URLを更新（ベースパスを維持）
-    history.pushState({ page: 'dashboard' }, 'Dashboard', '/officing/');
+    // URLを更新しない（GitHub Pagesでは固定）
+    // history.pushState({ page: 'dashboard' }, 'Dashboard', '/officing/');
     
     if (typeof dashboardManager !== 'undefined') {
       dashboardManager.showDashboard();
