@@ -16,6 +16,7 @@ const CONFIG = {
   
   // アプリケーション設定
   APP_NAME: 'Officing',
+  BASE_PATH: '/officing/', // GitHub Pages base path
   DEFAULT_TAG: 'office',
   
   // くじシステム設定
@@ -42,4 +43,22 @@ const CONFIG = {
 if (CONFIG.SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL' || 
     CONFIG.SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
   console.warn('⚠️ Supabase設定が未完了です。js/config.js を更新してください。');
+}
+
+/**
+ * ベースパスを考慮したURLを生成
+ * @param {string} path - 相対パス（例: 'login.html', 'css/main.css'）
+ * @returns {string} ベースパスを含む完全なパス
+ */
+function getAppPath(path) {
+  // パスが既に絶対パスまたはhttp(s)で始まる場合はそのまま返す
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) {
+    return path;
+  }
+  
+  // 先頭の './' を削除
+  const cleanPath = path.replace(/^\.\//, '');
+  
+  // ベースパスと結合
+  return CONFIG.BASE_PATH + cleanPath;
 }

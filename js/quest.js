@@ -393,7 +393,7 @@ class QuestManager {
               id: 'reauth',
               label: 'ログイン',
               handler: () => {
-                window.location.href = './login.html';
+                window.location.href = '/officing/login.html';
               }
             }
           ]
@@ -545,7 +545,7 @@ class QuestManager {
       <div class="error-screen">
         <h1>エラー</h1>
         <p>${message}</p>
-        <button onclick="window.location.href='/'" class="btn btn-primary">
+        <button onclick="window.location.href='/officing/'" class="btn btn-primary">
           ダッシュボードへ戻る
         </button>
       </div>

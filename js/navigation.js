@@ -319,7 +319,7 @@ class NavigationManager {
         await authManager.logout();
       } else {
         // フォールバック
-        window.location.href = './login.html';
+        window.location.href = '/officing/login.html';
       }
     } catch (error) {
       console.error('Logout error:', error);

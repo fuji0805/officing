@@ -15,24 +15,24 @@ const QUEUE_NAME = 'officing-queue';
 
 // キャッシュする静的アセット
 const STATIC_ASSETS = [
-  './',
-  './index.html',
-  './dashboard.html',
-  './auth-demo.html',
-  './css/main.css',
-  './js/config.js',
-  './js/supabase-client.js',
-  './js/app.js',
-  './js/auth.js',
-  './js/checkin.js',
-  './js/lottery.js',
-  './js/quest.js',
-  './js/level.js',
-  './js/title.js',
-  './js/shop.js',
-  './js/stamp.js',
-  './js/dashboard.js',
-  './manifest.json'
+  '/officing/',
+  '/officing/index.html',
+  '/officing/dashboard.html',
+  '/officing/auth-demo.html',
+  '/officing/css/main.css',
+  '/officing/js/config.js',
+  '/officing/js/supabase-client.js',
+  '/officing/js/app.js',
+  '/officing/js/auth.js',
+  '/officing/js/checkin.js',
+  '/officing/js/lottery.js',
+  '/officing/js/quest.js',
+  '/officing/js/level.js',
+  '/officing/js/title.js',
+  '/officing/js/shop.js',
+  '/officing/js/stamp.js',
+  '/officing/js/dashboard.js',
+  '/officing/manifest.json'
 ];
 
 /**

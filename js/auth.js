@@ -272,9 +272,7 @@ class AuthManager {
       window.location.href = this.returnUrl;
     } else {
       console.log('Redirecting to home');
-      // 現在のパスを保持してリダイレクト
-      const basePath = window.location.pathname.split('/').slice(0, -1).join('/') || '.';
-      window.location.href = basePath + '/';
+      window.location.href = '/officing/';
     }
   }
 
