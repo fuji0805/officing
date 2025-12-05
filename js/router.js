@@ -122,7 +122,7 @@ class Router {
       console.warn('Route not found:', normalizedPath);
       // デフォルトルート（ホーム）にリダイレクト
       if (normalizedPath !== '/') {
-        this.navigate('/');
+        window.location.href = '/officing/';
       }
       return;
     }
@@ -149,9 +149,10 @@ class Router {
       // ページタイトルを更新
       document.title = route.title;
 
-      // 履歴に追加
+      // 履歴に追加（ベースパスを含める）
       if (pushState) {
-        window.history.pushState({ path: normalizedPath }, route.title, normalizedPath);
+        const fullPath = normalizedPath === '/' ? '/officing/' : '/officing' + normalizedPath;
+        window.history.pushState({ path: normalizedPath }, route.title, fullPath);
       }
 
       // 現在のルートを更新
@@ -176,6 +177,12 @@ class Router {
   normalizePath(path) {
     // .htmlを削除
     let normalized = path.replace(/\.html$/, '');
+    
+    // ベースパスを削除（既に含まれている場合）
+    const basePath = '/officing';
+    if (normalized.startsWith(basePath)) {
+      normalized = normalized.substring(basePath.length);
+    }
     
     // 末尾のスラッシュを削除（ルート以外）
     if (normalized !== '/' && normalized.endsWith('/')) {
