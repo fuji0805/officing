@@ -367,9 +367,13 @@ class QuestManager {
         }, 2000);
       }
 
-      // 画面を再読み込み
+      // 画面を再読み込み（ダッシュボードから来た場合はダッシュボードに戻る）
       setTimeout(() => {
-        this.showQuestScreen();
+        if (typeof dashboardManager !== 'undefined') {
+          dashboardManager.showDashboard();
+        } else {
+          this.showQuestScreen();
+        }
       }, data.newTitles && data.newTitles.length > 0 ? 4000 : 2000);
 
     } catch (error) {

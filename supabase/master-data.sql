@@ -90,6 +90,9 @@ INSERT INTO quests (title, description, quest_type, rank, base_xp, base_points, 
 -- ============================================================================
 
 INSERT INTO titles (name, description, unlock_condition_type, unlock_condition_value, icon) VALUES
+-- First check-in title
+('新米出社ニスト', '初めてチェックインした記念の称号', 'attendance', '{"count": 1}', '👩‍🍼'),
+
 -- Streak-based titles (Requirement 5.5)
 ('3日坊主克服', '3日連続出社を達成した証', 'streak', '{"threshold": 3}', '🔥'),
 ('一週間の戦士', '7日連続出社を達成した証', 'streak', '{"threshold": 7}', '⚔️'),
