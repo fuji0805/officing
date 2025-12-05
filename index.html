@@ -122,10 +122,14 @@
                                 
                                 // チェックイン成功時に報酬を表示
                                 if (result && result.success) {
+                                    const tickets = result.ticketsEarned || 0;
+                                    const xp = result.xpEarned || 0;
+                                    const points = result.pointsEarned || 0;
+                                    
                                     let rewardMessage = '🎉 チェックイン成功！\n\n';
-                                    rewardMessage += `🎫 チケット: ${result.ticketsEarned}枚\n`;
-                                    rewardMessage += `⭐ 経験値: +${result.xpEarned} XP\n`;
-                                    rewardMessage += `💎 ポイント: +${result.pointsEarned}\n`;
+                                    rewardMessage += `🎫 チケット: ${tickets}枚\n`;
+                                    rewardMessage += `⭐ 経験値: +${xp} XP\n`;
+                                    rewardMessage += `💎 ポイント: +${points} ポイント\n`;
                                     
                                     if (result.levelUp) {
                                         rewardMessage += `\n🎊 レベルアップ！ Lv.${result.newLevel}\n`;
@@ -137,6 +141,8 @@
                                             rewardMessage += `  - ${title.name}\n`;
                                         });
                                     }
+                                    
+                                    console.log('Checkin rewards:', { tickets, xp, points, levelUp: result.levelUp });
                                     
                                     setTimeout(() => {
                                         alert(rewardMessage);

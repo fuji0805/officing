@@ -319,15 +319,49 @@ async function grantBaseRewards(
     .from('user_progress')
     .select('level, current_xp, total_points')
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
 
-  if (progressError && progressError.code !== 'PGRST116') {
+  if (progressError) {
     throw progressError
   }
 
-  const currentLevel = progress?.level || 1
-  const currentXP = progress?.current_xp || 0
-  const currentPoints = progress?.total_points || 0
+  // Create user_progress if it doesn't exist
+  if (!progress) {
+    const { error: createError } = await supabaseClient
+      .from('user_progress')
+      .insert({
+        user_id: userId,
+        level: 1,
+        current_xp: BASE_XP,
+        total_points: BASE_POINTS,
+        current_streak: 0,
+        max_streak: 0,
+        pity_counter: 0,
+      })
+
+    if (createError) {
+      throw createError
+    }
+
+    // Grant lottery ticket for new user
+    await supabaseClient
+      .from('lottery_tickets')
+      .insert({
+        user_id: userId,
+        ticket_count: BASE_TICKETS,
+        earned_from: 'checkin',
+      })
+
+    return {
+      xp: BASE_XP,
+      points: BASE_POINTS,
+      levelUp: false,
+    }
+  }
+
+  const currentLevel = progress.level || 1
+  const currentXP = progress.current_xp || 0
+  const currentPoints = progress.total_points || 0
 
   // Calculate new XP and check for level up
   const newXP = currentXP + BASE_XP
